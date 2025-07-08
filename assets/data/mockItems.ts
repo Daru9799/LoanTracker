@@ -95,7 +95,6 @@ export const mockItems: Item[] = [
     quantity: 1,
     category_id: 'electronics',
     borrowed_at: new Date('2025-06-30'),
-    return_at: new Date('2025-07-15'),
     is_returned: false,
   },
   {
@@ -131,7 +130,7 @@ export const mockItems: Item[] = [
     category_id: 'electronics',
     borrowed_at: new Date('2025-06-01'),
     return_at: new Date('2025-06-15'),
-    is_returned: true,
+    is_returned: false,
   },
   {
     id: '12',

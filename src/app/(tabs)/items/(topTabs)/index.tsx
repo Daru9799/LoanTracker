@@ -1,6 +1,6 @@
-import ItemCard from '@/src/components/ItemCard';
 import { StyleSheet, FlatList, View } from 'react-native';
-import { mockItems } from '../../../../assets/data/mockItems'
+import { mockItems } from '../../../../../assets/data/mockItems'
+import ItemCard from '@/src/components/ItemCard';
 
 export default function ItemsMainScreen() {
 

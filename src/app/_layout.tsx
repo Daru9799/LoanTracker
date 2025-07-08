@@ -12,8 +12,9 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Drawer>
-        <Drawer.Screen name="(tabs)" options={{ title: 'Home' }} />
+        <Drawer.Screen name="(tabs)" options={{ title: 'Loan Tracker' }} />
         <Drawer.Screen name="timeline" options={{ title: 'Timeline' }} />
+        <Drawer.Screen name="archived" options={{ title: 'Archived Items' }} />
       </Drawer>
     </ThemeProvider>
   );
