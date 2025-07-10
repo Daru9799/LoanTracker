@@ -2,12 +2,13 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { Package, Banknote } from 'lucide-react-native';
 import TabIcon from '@/src/components/TabIcon';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarLabelStyle: { fontSize: 17},
+        tabBarLabelStyle: { fontSize: 14},
         tabBarIconStyle: { width: 30, height: 30 },
       }}>
       <Tabs.Screen

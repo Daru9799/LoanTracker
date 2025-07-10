@@ -1,8 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, useColorScheme, View } from 'react-native'
 import React from 'react'
 import Timeline from 'react-native-timeline-flatlist'
 import { mockItems } from '@/assets/data/mockItems';
 import { checkIsLate } from '../functions';
+import ThemedView from '../components/ThemedView';
+import { Colors } from '../constants/Colors';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView } from 'react-native-gesture-handler';
 
 //Pobranie itemów z sortowaniem (zabezpieczenie przed undefined)
 const items = [...mockItems].sort((a, b) => {
@@ -21,6 +25,9 @@ function formatDateToDayMonth(date: Date|undefined) {
 }
 
 export default function MyTimeline() {
+    const colorScheme = useColorScheme();
+    const themeColors = Colors[colorScheme ?? 'light'];
+    const titleColor = themeColors.text;
 
     //Format danych pod timeline
     const isLate = (date1: Date | undefined, isReturned: boolean) => {
@@ -37,16 +44,24 @@ export default function MyTimeline() {
     }));
     
   return (
-    <View style={styles.container}>
-      <Timeline
-        style={styles.timeline}
-        data={timelineData}
-        circleSize={22}
-        lineColor="#009688"
-        timeStyle={styles.timeStyle}
-        descriptionStyle={styles.descriptionStyle}
-      />
-    </View>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
+      <ThemedView style={styles.container}>
+        <ScrollView>
+          <Timeline
+            style={styles.timeline}
+            data={timelineData}
+            circleSize={22}
+            lineColor="#009688"
+            timeStyle={[styles.timeStyle]}
+            titleStyle={{color: titleColor}}
+            descriptionStyle={styles.descriptionStyle}
+            isUsingFlatlist={false}
+          />
+        </ScrollView>
+
+      </ThemedView>
+    </SafeAreaView>
+
   );
 }
 
@@ -54,18 +69,18 @@ export default function MyTimeline() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
   },
   timeline: {
+    paddingHorizontal: 20,
     flex: 1,
+    paddingTop: 5
   },
   timeStyle: {
     textAlign: 'center',
     backgroundColor: '#009688',
-    color: 'white',
     padding: 5,
     borderRadius: 13,
+    color: 'white'
   },
   descriptionStyle: {
     color: 'gray',
