@@ -16,7 +16,6 @@ const ArchivedItems = () => {
             data={items}
             renderItem={({item}) => <ItemCard item={item} archived={true}></ItemCard>}
             contentContainerStyle={{gap: 10, padding: 10}}
-
         />
     </ThemedView>
     </SafeAreaView>

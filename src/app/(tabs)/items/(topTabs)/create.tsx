@@ -9,6 +9,7 @@ import { mockCategories } from '@/assets/data/mockCategories';
 import { CheckCircle } from 'lucide-react-native';
 import ThemedText from '@/src/components/ThemedText';
 import ThemedView from '@/src/components/ThemedView';
+import { Colors } from '@/src/constants/Colors';
 
 const Create = () => {
   const categories = mockCategories
@@ -24,9 +25,7 @@ const Create = () => {
   const [itemCategory, setItemCategory] = useState<string | null>(null);
   const [isImageSelected, setIsImageSelected] = useState(false);
   const [itemImage, setItemImage] = useState<string | null>(null)
-  const [dialogVisible, setDialogVisible] = useState(false);
 
-  
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if(!selectedDate) return;
     const currentDate = selectedDate;
@@ -59,17 +58,19 @@ const Create = () => {
 
   const submitForm = () => {
     console.log(`Submit: ${itemName}, ${itemDescription}, ${itemQuantity},  ${borrowedDate.toLocaleDateString()}, ${returnDate.toLocaleDateString()}, ${itemCategory}, ${itemImage}`)
-    setDialogVisible(true);
     clearForm()
   }
 
   const clearForm = () => {
-    
+    setItemName('')
+    setItemDescription('')
+    setItemQuantity('1')
+    setItemCategory(null)
+    setItemImage(null)
+    setBorrowedDate(new Date())
+    setReturnDate(dayjs().add(1, 'day').toDate())
   }
 
-  const hideDialog = () => {
-    setDialogVisible(false);
-  }
 
   return (
     <ThemedView style={styles.container}>
@@ -101,7 +102,7 @@ const Create = () => {
               <Checkbox.Item 
                 label="Return Date:"
                 position='leading'
-                color='#2196F3'
+                color={Colors.light.buttonColor}
                 status={isDateReturnSelected ? 'checked' : 'unchecked'}
                 onPress={() => setIsDateReturnSelected(!isDateReturnSelected)}
                 style={styles.checkbox}
@@ -155,24 +156,10 @@ const Create = () => {
           </Button>
         </List.Accordion>
           
-          <Button buttonColor='#2196F3' icon="" mode="contained" style={styles.submitButton} onPress={submitForm}>
+          <Button buttonColor={Colors.light.buttonColor} icon="" mode="contained" style={styles.submitButton} onPress={submitForm}>
             <Text style={{color: 'white'}}>Add New Loan</Text>
           </Button>
       </ScrollView>
-
-      <Portal>
-        <Dialog visible={dialogVisible} onDismiss={hideDialog}>
-          <Dialog.Title>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <CheckCircle size={20} color="green" style={{ marginRight: 8 }} />
-              <Text>This is a title</Text>
-            </View>
-          </Dialog.Title>
-          <Dialog.Content>
-            <Text>This is a simple dialog</Text>
-          </Dialog.Content>
-        </Dialog>
-      </Portal>
 
       {show && (
         <DateTimePicker

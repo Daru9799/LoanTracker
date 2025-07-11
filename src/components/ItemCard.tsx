@@ -39,13 +39,13 @@ const ItemCard = ({item, archived=false} : ItemCardProps) => {
           <ThemedText style={styles.title}>{item.title}</ThemedText>
           <View style={styles.rowWrapper}>
             <View style={styles.itemRow}>
-              <Calendar color={'purple'} size={22} strokeWidth={2}/>
+              <Calendar color={Colors.light.buttonColor} size={22} strokeWidth={2}/>
               <ThemedText style={styles.contentText}>{relativeBorrowedDate}</ThemedText>
             </View>
 
             {!archived ? (
               <View style={styles.itemRow}>
-                <CalendarClock color={'purple'} size={22} strokeWidth={2}/>
+                <CalendarClock color={Colors.light.buttonColor} size={22} strokeWidth={2}/>
                 <ThemedText style={[isLate ? {color: normalTextColor} : styles.returnDateColorLate, styles.contentText]}>{relativeReturnDate}</ThemedText>
               </View>
             ) : (
@@ -55,7 +55,7 @@ const ItemCard = ({item, archived=false} : ItemCardProps) => {
           </View>
 
           <View style={styles.itemRow}>
-            <Contact2 color={'purple'} size={22} strokeWidth={2} />
+            <Contact2 color={Colors.light.buttonColor} size={22} strokeWidth={2} />
             <ThemedText style={styles.contentText}>{ item.borrower_user_id ?? item.borrower_contact_id ?? 'Undefined User'
               /* W zależności od przyjętej wartości null wybiera odpowiednią osobę (rozwiązanie tymczasowe) */ }
             </ThemedText>

@@ -2,7 +2,6 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { Package, Banknote } from 'lucide-react-native';
 import TabIcon from '@/src/components/TabIcon';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
   return (
