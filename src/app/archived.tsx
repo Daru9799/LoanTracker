@@ -4,8 +4,15 @@ import { mockItems } from '@/assets/data/mockItems'
 import ItemCard from '../components/ItemCard'
 import ThemedView from '../components/ThemedView'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useAuth } from '../providers/AuthProvider'
+import { Redirect } from 'expo-router'
 
 const ArchivedItems = () => {
+  const { session } = useAuth()
+
+  if(!session) {
+    return <Redirect href={'/(auth)/login'} />
+  }
 
   const items = mockItems.filter((item) => item.is_returned === true)
   

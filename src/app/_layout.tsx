@@ -5,6 +5,7 @@ import { Drawer } from 'expo-router/drawer'
 import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import QueryProvider from '../providers/QueryProvider';
+import AuthProvider from '../providers/AuthProvider';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -13,13 +14,17 @@ export default function RootLayout() {
   <SafeAreaProvider>
     <PaperProvider>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <QueryProvider>
-          <Drawer>
-            <Drawer.Screen name="(tabs)" options={{ title: 'Loan Tracker' }} />
-            <Drawer.Screen name="timeline" options={{ title: 'Timeline' }} />
-            <Drawer.Screen name="archived" options={{ title: 'Archived Items' }} />
-          </Drawer>
-        </QueryProvider>
+        <AuthProvider>
+          <QueryProvider>
+            <Drawer >
+              <Drawer.Screen name="(tabs)" options={{ title: 'Loan Tracker' }} />
+              <Drawer.Screen name="timeline" options={{ title: 'Timeline' }} />
+              <Drawer.Screen name="archived" options={{ title: 'Archived Items' }} />
+              <Drawer.Screen name="profile" options={{ title: 'Profile' }} />
+              <Drawer.Screen name="(auth)" options={{ headerShown: false, drawerItemStyle: { display: 'none' } }} />
+            </Drawer>
+          </QueryProvider>
+         </AuthProvider> 
       </ThemeProvider>
     </PaperProvider>
   </SafeAreaProvider>

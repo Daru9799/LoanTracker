@@ -7,6 +7,8 @@ import ThemedView from '../components/ThemedView';
 import { Colors } from '../constants/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useAuth } from '../providers/AuthProvider';
+import { Redirect } from 'expo-router';
 
 //Pobranie itemów z sortowaniem (zabezpieczenie przed undefined)
 const items = [...mockItems].sort((a, b) => {
@@ -25,6 +27,12 @@ function formatDateToDayMonth(date: Date|undefined) {
 }
 
 export default function MyTimeline() {
+    const { session } = useAuth()
+
+    if(!session) {
+      return <Redirect href={'/(auth)/login'} />
+    }
+
     const colorScheme = useColorScheme();
     const themeColors = Colors[colorScheme ?? 'light'];
     const titleColor = themeColors.text;
