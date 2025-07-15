@@ -1,20 +1,25 @@
-import { Alert, Pressable, StyleSheet, Text } from 'react-native'
+import { Pressable, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import ThemedView from '@/src/components/ThemedView'
 import ThemedText from '@/src/components/ThemedText'
 import CustomInputField from '@/src/components/CustomInputField'
-import { Button } from 'react-native-paper'
+import { Button, Text } from 'react-native-paper'
 import { Colors } from '@/src/constants/Colors'
 import { supabase } from '@/src/lib/supabase'
 import { useRouter } from 'expo-router'
 import { PiggyBank } from 'lucide-react-native'
+import CustomWarningDialog from '@/src/components/CustomWarningDialog'
 
 const Login = () => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [loading, setLoading] = useState(false)
+  const [visible, setVisible] = useState(false);
+  const [error, setError] = useState('')
 
-  const router = useRouter()
+  const router = useRouter();
+
+  const hideDialog = () => setVisible(false);
   
   const submitLogin = async() => {
     setLoading(true)
@@ -22,8 +27,12 @@ const Login = () => {
       email: email, 
       password: password
     })
-    if (error) Alert.alert(error.message)
-    console.log(`Your credentials for register are, email: ${email} password: ${password}`)
+    if (error) {
+      setError(error.message)
+      setVisible(true)
+    }
+
+    clearForm()
     setLoading(false)
   }
 
@@ -47,7 +56,7 @@ const Login = () => {
           <ThemedText>Email:</ThemedText>
           <CustomInputField placeholder='Email' value={email} onChangeText={setEmail} />
         </ThemedView>
-
+        
         <ThemedView style={styles.formRow}>
           <ThemedText>Password:</ThemedText>
           <CustomInputField placeholder='Password' secureTextEntry={true} value={password} onChangeText={setPassword} />
@@ -58,11 +67,14 @@ const Login = () => {
         </Button>
       </ThemedView>
 
-      <Pressable onPress={goToRegisterForm} style={styles.registerContainer}>
-        <ThemedText style={styles.registerText}>
+      <Pressable onPress={goToRegisterForm} style={styles.loginContainer}>
+        <ThemedText style={styles.loginText}>
             You don't have an account? Sign Up
         </ThemedText>
       </Pressable>
+
+      <CustomWarningDialog visible={visible} title={'Login error'} description={error} onDismiss={hideDialog} icon={'alert'} iconColor={'#FF2C2C'}/>
+
     </ThemedView>
   )
 }
@@ -83,12 +95,12 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
       marginVertical: 10
     },
-    registerText: {
+    loginText: {
       alignSelf: 'center',
       textDecorationLine: 'underline',
       fontWeight: '600',
     },
-    registerContainer: {
+    loginContainer: {
       alignSelf: 'center',
       position: 'absolute',
       bottom: 30,
