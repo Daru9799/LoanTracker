@@ -3,17 +3,16 @@ import React, { useState } from 'react'
 import CustomInputField from '@/src/components/CustomInputField'
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
-import { List, Checkbox, Chip, Button, Portal, Dialog } from 'react-native-paper';
+import { List, Checkbox, Chip, Button, Portal, Dialog, Snackbar } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
-import { mockCategories } from '@/assets/data/mockCategories';
-import { CheckCircle } from 'lucide-react-native';
 import ThemedText from '@/src/components/ThemedText';
 import ThemedView from '@/src/components/ThemedView';
 import { Colors } from '@/src/constants/Colors';
+import { useCategoriesList } from '@/src/api/categories';
+import { useCreateItem } from '@/src/api/items';
+import { useRouter } from 'expo-router';
 
 const Create = () => {
-  const categories = mockCategories
-
   const [itemName, setItemName] = useState('')
   const [itemDescription, setItemDescription] = useState('')
   const [borrowedDate, setBorrowedDate] = useState(new Date())
@@ -22,9 +21,29 @@ const Create = () => {
   const [datePickerType, setDatePickerType] = useState<'borrowed' | 'return'>('borrowed')
   const [isDateReturnSelected, setIsDateReturnSelected] = useState(true);
   const [itemQuantity, setItemQuantity] = useState('1')
-  const [itemCategory, setItemCategory] = useState<string | null>(null);
+  const [itemCategoryId, setItemCategoryId] = useState<string | null>(null);
   const [isImageSelected, setIsImageSelected] = useState(false);
-  const [itemImage, setItemImage] = useState<string | null>(null)
+  const [itemImage, setItemImage] = useState<string | null>(null);
+  const [error, setError] = useState('');
+  const [visible, setVisible] = useState(false);
+  const onDismissSnackBar = () => setVisible(false);
+
+  const { data: categories } = useCategoriesList()
+  const { mutate: createItem } = useCreateItem()
+
+  const router = useRouter()
+
+  const addItemToList = (title: string, quantity: string, borrowed_at: Date, category_id: string, description: string | null, return_at: Date | null, image_url: string | null) => {
+    createItem({
+      itemTitle: title,
+      itemQuantity: parseInt(quantity, 10),
+      itemBorrowedDate: borrowed_at,
+      itemCategoryId: category_id,
+      itemDescription: description,
+      itemReturnDate: return_at,
+      itemImageUrl: image_url
+    }, {onSuccess: router.back})
+  }
 
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if(!selectedDate) return;
@@ -57,7 +76,28 @@ const Create = () => {
   };
 
   const submitForm = () => {
-    console.log(`Submit: ${itemName}, ${itemDescription}, ${itemQuantity},  ${borrowedDate.toLocaleDateString()}, ${returnDate.toLocaleDateString()}, ${itemCategory}, ${itemImage}`)
+    //console.log(`Submit: ${itemName}, ${itemDescription}, ${itemQuantity},  ${borrowedDate.toLocaleDateString()}, ${returnDate.toLocaleDateString()}, ${itemCategory}, ${itemImage}`)
+    if(itemName.length < 3) {
+      setError("Name is too short!")
+      setVisible(true)
+      return
+    }
+
+    if(itemCategoryId === null) {
+      setError("You need to choose category!")
+      setVisible(true)
+      return
+    }
+
+    addItemToList(
+      itemName, 
+      itemQuantity, 
+      borrowedDate, 
+      itemCategoryId, 
+      itemDescription, 
+      isDateReturnSelected ? returnDate : null, 
+      isImageSelected ? itemImage : null
+    )
     clearForm()
   }
 
@@ -65,11 +105,25 @@ const Create = () => {
     setItemName('')
     setItemDescription('')
     setItemQuantity('1')
-    setItemCategory(null)
+    setItemCategoryId(null)
     setItemImage(null)
     setBorrowedDate(new Date())
     setReturnDate(dayjs().add(1, 'day').toDate())
   }
+
+  const openCamera = async () => {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permission.granted) {
+      alert('Camera permission required');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync();
+    
+    if (!result.canceled) {
+      setItemImage(result.assets[0].uri);
+    }
+  };
 
 
   return (
@@ -122,11 +176,11 @@ const Create = () => {
 
         <List.Accordion title={'Category'}>
           <View style={styles.categoriesContainer}>
-            {categories.map((cat) => (
+            {categories?.map((cat) => (
               <Chip 
                   key={cat.id}
-                  selected={itemCategory === cat.id}
-                  onPress={() => setItemCategory(cat.id)}
+                  selected={itemCategoryId === cat.id}
+                  onPress={() => setItemCategoryId(cat.id)}
                 >
                 {cat.name}
               </Chip>
@@ -151,13 +205,19 @@ const Create = () => {
           onPress={() => setIsImageSelected(!isImageSelected)}
         >
           {itemImage && <Image source={{ uri: itemImage }} style={styles.image} />}
-          <Button icon="camera" mode="text" style={styles.imageButton} onPress={pickImage}>
-            {itemImage ? 'Change Photo' : 'Choose Photo' }
-          </Button>
+          <ThemedView style={styles.imageButtonContainer}>
+            <Button icon="image" mode="text" style={styles.imageButton} onPress={pickImage}>
+              {itemImage ? 'Change Photo' : 'Choose Photo' }
+            </Button>
+            <Button icon="camera" mode="text" style={styles.imageButton} onPress={openCamera}> 
+              Open Camera
+            </Button>
+          </ThemedView>
+
         </List.Accordion>
           
           <Button buttonColor={Colors.light.buttonColor} icon="" mode="contained" style={styles.submitButton} onPress={submitForm}>
-            <Text style={{color: 'white'}}>Add New Loan</Text>
+            <Text style={{color: 'white'}}>Add New Item</Text>
           </Button>
       </ScrollView>
 
@@ -170,6 +230,18 @@ const Create = () => {
           minimumDate={datePickerType === 'return' ? dayjs(borrowedDate).add(1, 'day').toDate() : undefined}
         />
       )}
+
+      <Snackbar
+        visible={visible}
+        onDismiss={onDismissSnackBar}
+        action={{
+          label: 'Got it!',
+          onPress: () => {
+            onDismissSnackBar
+          },
+        }}>
+        {error}
+      </Snackbar>
     </ThemedView>
   )
 }
@@ -209,9 +281,11 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   imageButton: {
-    marginVertical: 10,
     width: '50%',
-    alignSelf: 'center',
+  },
+  imageButtonContainer: {
+    marginVertical: 10,
+    flexDirection: 'row'
   },
   submitButton: {
     width: '90%',

@@ -8,7 +8,7 @@ export default function ItemsTabLayout() {
     return (
       <TopTabs>
         <TopTabs.Screen name="index" options={{title: 'Lent Items'}} />
-        <TopTabs.Screen name="create" options={{title: 'New Loan'}} />
+        <TopTabs.Screen name="create" options={{title: 'Add New'}} />
       </TopTabs>
     );
 }

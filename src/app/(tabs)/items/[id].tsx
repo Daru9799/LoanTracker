@@ -1,25 +1,41 @@
-import { StyleSheet, Image, useColorScheme } from 'react-native'
+import { StyleSheet, Image, useColorScheme, ActivityIndicator } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { Link, useLocalSearchParams, useRouter } from 'expo-router'
 import { mockItems } from '@/assets/data/mockItems'
 import ThemedView from '@/src/components/ThemedView'
-import { Appbar, Divider, List, Menu, SegmentedButtons } from 'react-native-paper'
+import { Appbar, Divider, List, Menu, SegmentedButtons, Snackbar } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Colors } from '@/src/constants/Colors'
 import ThemedText from '@/src/components/ThemedText'
+import { useDeleteItem, useItemDetails, useUpdateItemStatus } from '@/src/api/items'
 
 const ItemDetails = () => {
   const { id } = useLocalSearchParams()
-  const item = mockItems.find((item) => item.id == id)
+  //const item = mockItems.find((item) => item.id == id)
+  const { data: item, isLoading, error } = useItemDetails(id.toString());
+  const { mutate: updateItem } = useUpdateItemStatus();
+  const { mutate: deleteItem, isPending } = useDeleteItem();
+
+  const router = useRouter()
+
   const [menuVisible, setMenuVisible] = useState(false)
   const [status, setStatus] = useState(item?.is_returned)
 
   const colorScheme = useColorScheme();
   const themeColors = Colors[colorScheme ?? 'light'];
-  
-  const router = useRouter()
 
-  //TO jeszcze przetestowac (rozwiazanie tymczasowe)
+  const updateIsReturnedStatus = (is_returned: boolean) => {
+    updateItem({itemId: id.toString(), is_returned}, {onSuccess: router.back})
+  }
+
+  const deleteItemFromList = () => {
+    deleteItem({itemId: id.toString()}, {onSuccess: () => {
+      console.log("✅ onSuccess fired from deleteItem");
+      router.back();
+    }
+  })
+  }
+  
   const isFirstRender = useRef(true);
   useEffect(() => {
     if (isFirstRender.current) {
@@ -27,6 +43,7 @@ const ItemDetails = () => {
       return;
     }
     console.log(`Status itemu ${item?.title} został zmieniony na ${status}`)
+    if(status != undefined) updateIsReturnedStatus(status)
   }, [status]);
 
   const goBack = () => {
@@ -45,6 +62,14 @@ const ItemDetails = () => {
   const onRemovePress = () => {
     console.log('Remove clicked!')
     closeMenu()
+    deleteItemFromList()
+  }
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+  if (error) {
+    return <ThemedText>Failed to fetch test data!</ThemedText>;
   }
 
   if(!item) {
@@ -78,9 +103,9 @@ const ItemDetails = () => {
             }
             anchorPosition="bottom"
           >
-            <Menu.Item onPress={onEditPress} title="Edit" />
+            <Menu.Item onPress={onEditPress} title="Edit" disabled={isPending}/>
             <Divider />
-            <Menu.Item onPress={onRemovePress} title="Remove" />
+            <Menu.Item onPress={onRemovePress} title="Remove" disabled={isPending}/>
           </Menu>
         </Appbar.Header>
 
@@ -106,19 +131,20 @@ const ItemDetails = () => {
             left={() => <List.Icon icon="cube-outline" />}
           />
           <List.Item
-            title={`${item?.borrowed_at.toLocaleDateString()}`}
+            title={`${item?.borrowed_at}`}
             left={() => <List.Icon icon="calendar-arrow-right" />}
           />
           <List.Item
-            title={`${item?.return_at?.toLocaleDateString()}`}
+            title={`${item?.return_at || "TBD"}`}
             left={() => <List.Icon icon="calendar-arrow-left" />}
           />
           <List.Item
-            title={`${item?.category_id}`}
+            title={`${item?.category_name}`}
             left={() => <List.Icon icon="shape-outline" />}
           />
         </List.Section>
         
+        {!item.is_returned &&
         <SegmentedButtons
           value={status ? 'true' : 'false'}
           onValueChange={(value) => setStatus(value === 'true')}
@@ -126,14 +152,25 @@ const ItemDetails = () => {
             {
               value: 'false',
               label: 'Not Returned',
+              disabled: isPending
             },
             {
               value: 'true',
               label: 'Returned',
+              disabled: isPending
             },
           ]}
-        />
+        /> }
         </ScrollView>
+        {isPending &&
+        <Snackbar
+          visible={isPending}
+          onDismiss={() => {}}>
+          Deleting item... Please wait!
+        </Snackbar>
+        }
+
+
     </ThemedView>
   )
 }

@@ -6,6 +6,7 @@ import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import QueryProvider from '../providers/QueryProvider';
 import AuthProvider from '../providers/AuthProvider';
+import { User, PiggyBank, Archive, Clock9 } from 'lucide-react-native';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -17,10 +18,26 @@ export default function RootLayout() {
         <AuthProvider>
           <QueryProvider>
             <Drawer >
-              <Drawer.Screen name="(tabs)" options={{ title: 'Loan Tracker' }} />
-              <Drawer.Screen name="timeline" options={{ title: 'Timeline' }} />
-              <Drawer.Screen name="archived" options={{ title: 'Archived Items' }} />
-              <Drawer.Screen name="profile" options={{ title: 'Profile' }} />
+              <Drawer.Screen name="(tabs)" options={{ 
+                title: 'Loan Tracker', 
+                drawerIcon: ({ color, size }) => (
+                <PiggyBank size={size} color={color} />
+              ) }}/>
+              <Drawer.Screen name="timeline" options={{ 
+                title: 'Timeline',       
+                drawerIcon: ({ color, size }) => (
+                <Clock9 size={size} color={color} />
+              ) }} />
+              <Drawer.Screen name="archived" options={{ 
+                title: 'Archived Items',
+                drawerIcon: ({ color, size }) => (
+                <Archive size={size} color={color} />
+              ) }} />
+              <Drawer.Screen name="profile" options={{ 
+                title: 'Profile', 
+                drawerIcon: ({ color, size }) => (
+                <User size={size} color={color} />
+              ) }} />
               <Drawer.Screen name="(auth)" options={{ headerShown: false, drawerItemStyle: { display: 'none' } }} />
             </Drawer>
           </QueryProvider>

@@ -56,7 +56,7 @@ const ItemCard = ({item, archived=false} : ItemCardProps) => {
 
           <View style={styles.itemRow}>
             <Contact2 color={Colors.light.buttonColor} size={22} strokeWidth={2} />
-            <ThemedText style={styles.contentText}>{ item.borrower_user_id ?? item.borrower_contact_id ?? 'Undefined User'
+            <ThemedText style={styles.contentText}>{ item.borrower_username ?? item.borrower_contact_id ?? 'Undefined User' //!kontakty
               /* W zależności od przyjętej wartości null wybiera odpowiednią osobę (rozwiązanie tymczasowe) */ }
             </ThemedText>
           </View>

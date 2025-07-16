@@ -11,4 +11,7 @@ export interface Item {
   borrowed_at: Date;
   return_at?: Date;
   is_returned: boolean;
+  //Dodatkowe pola
+  borrower_username?: string
+  category_name?: string
 }
