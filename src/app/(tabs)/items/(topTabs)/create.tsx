@@ -11,6 +11,11 @@ import { Colors } from '@/src/constants/Colors';
 import { useCategoriesList } from '@/src/api/categories';
 import { useCreateItem } from '@/src/api/items';
 import { useRouter } from 'expo-router';
+import { supabase } from '@/src/lib/supabase';
+import { randomUUID } from 'expo-crypto'
+import * as FileSystem from 'expo-file-system'
+import { decode } from 'base64-arraybuffer'
+import CustomActivityIndicator from '@/src/components/CustomActivityIndicator';
 
 const Create = () => {
   const [itemName, setItemName] = useState('')
@@ -30,19 +35,40 @@ const Create = () => {
 
   const { data: categories } = useCategoriesList()
   const { mutate: createItem } = useCreateItem()
+  const [isLoading, setIsLoading] = useState(false)
 
   const router = useRouter()
 
-  const addItemToList = (title: string, quantity: string, borrowed_at: Date, category_id: string, description: string | null, return_at: Date | null, image_url: string | null) => {
-    createItem({
-      itemTitle: title,
-      itemQuantity: parseInt(quantity, 10),
-      itemBorrowedDate: borrowed_at,
-      itemCategoryId: category_id,
-      itemDescription: description,
-      itemReturnDate: return_at,
-      itemImageUrl: image_url
-    }, {onSuccess: router.back})
+  const addItemToList = async (title: string, quantity: string, borrowed_at: Date, category_id: string, description: string | null, return_at: Date | null, image_url: string | null) => {
+    let fileUrl: string | null = null
+    setIsLoading(true)
+    try {
+      if(image_url !== null) {
+        const uploadedUrl = await uploadImage()
+        if (uploadedUrl === undefined) { //Jeśli zwróci undefined (czyli coś pójdzie nie tak) to wywali błąd
+          setVisible(true)
+          return
+        }
+        fileUrl = uploadedUrl; 
+      }
+
+      createItem({
+        itemTitle: title,
+        itemQuantity: parseInt(quantity, 10),
+        itemBorrowedDate: borrowed_at,
+        itemCategoryId: category_id,
+        itemDescription: description,
+        itemReturnDate: return_at,
+        itemImageUrl: fileUrl
+      }, {onSuccess: onItemAddedSuccess})
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const onItemAddedSuccess = () => {
+    setError("Item added to database!")
+    setVisible(true)
   }
 
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
@@ -72,6 +98,31 @@ const Create = () => {
     if (!result.canceled) {
       setItemImage(result.assets[0].uri);
       console.log(itemImage)
+    }
+  };
+
+  const uploadImage = async () => {
+    if (!itemImage?.startsWith('file://')) {
+      return;
+    }
+
+    const base64 = await FileSystem.readAsStringAsync(itemImage, {
+      encoding: 'base64',
+    });
+    const filePath = `${randomUUID()}.png`;
+    const contentType = 'image/png';
+    const { data, error } = await supabase.storage
+      .from('item-images')
+      .upload(filePath, decode(base64), { contentType });
+
+    if(error) {
+      setError("Failed to upload the image. Please try again.")
+      console.log("Error:" + error.message)
+      return
+    }
+
+    if (data) {
+      return data.path;
     }
   };
 
@@ -124,6 +175,10 @@ const Create = () => {
       setItemImage(result.assets[0].uri);
     }
   };
+
+  if(isLoading) {
+    return <CustomActivityIndicator style={styles.activityIndicator} />
+  }
 
 
   return (
@@ -234,6 +289,7 @@ const Create = () => {
       <Snackbar
         visible={visible}
         onDismiss={onDismissSnackBar}
+        duration={3000}
         action={{
           label: 'Got it!',
           onPress: () => {
@@ -291,5 +347,8 @@ const styles = StyleSheet.create({
     width: '90%',
     alignSelf: 'center',
     marginVertical: 10
+  },
+  activityIndicator : {
+    marginTop: 10
   }
 })

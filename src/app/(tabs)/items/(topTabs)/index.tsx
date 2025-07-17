@@ -3,13 +3,14 @@ import ItemCard from '@/src/components/ItemCard';
 import ThemedView from '@/src/components/ThemedView';
 import { useItemList } from '@/src/api/items';
 import ThemedText from '@/src/components/ThemedText';
+import CustomActivityIndicator from '@/src/components/CustomActivityIndicator';
 
 export default function ItemsMainScreen() {
 
   const { data: items, isLoading, error } = useItemList({isArchived: false});
 
   if (isLoading) {
-    return <ActivityIndicator />;
+    return <CustomActivityIndicator style={styles.activityIndicator} />;
   }
   if (error) {
     return <ThemedText>Failed to fetch test data!</ThemedText>;
@@ -31,5 +32,8 @@ export default function ItemsMainScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  activityIndicator : {
+    marginTop: 10
   }
 });

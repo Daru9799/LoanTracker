@@ -8,6 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { Colors } from '@/src/constants/Colors'
 import ThemedText from '@/src/components/ThemedText'
 import { useDeleteItem, useItemDetails, useUpdateItemStatus } from '@/src/api/items'
+import RemoteImage from '@/src/components/RemoteImage'
 
 const ItemDetails = () => {
   const { id } = useLocalSearchParams()
@@ -110,8 +111,8 @@ const ItemDetails = () => {
         </Appbar.Header>
 
         {item?.image_url &&
-          <Image
-            source={{uri: `${item?.image_url}`}}
+          <RemoteImage
+            path={item?.image_url}
             style={styles.image}
           />
         }
