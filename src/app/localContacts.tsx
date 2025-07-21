@@ -1,7 +1,7 @@
 import { StyleSheet, useColorScheme, View, Text } from 'react-native'
 import React, { useState } from 'react'
 import ThemedText from '../components/ThemedText'
-import { useContactList } from '../api/contacts'
+import { useContactList, useCreateContact, useDeleteContact } from '../api/contacts'
 import CustomActivityIndicator from '../components/CustomActivityIndicator'
 import { FlatList } from 'react-native-gesture-handler'
 import { useAuth } from '../providers/AuthProvider'
@@ -13,37 +13,43 @@ import { Colors } from '../constants/Colors'
 import CustomDecisionModal from '../components/CustomDecisionModal'
 
 const LocalContacts = () => {
-  const [visible, setVisible] = useState(false);
-  const [name, setName] = useState('')
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
-
-  const [deleteModalvisible, setDeleteModalVisible] = useState(false);
-  const showDeleteModal = () => setDeleteModalVisible(true);
-  const hideDeleteModal = () => setDeleteModalVisible(false);
-
-  const colorScheme = useColorScheme();
-  const cardBackground = colorScheme === 'dark' ? '#2a3238ff' : '#F7F7F7';
-
-  const onAddContact = () => {
-    if (name.length < 3) {
-      console.log('Name is too short!')
-      return
-    } 
-    console.log(`Contact ${name} was added to database!`)
-    hideModal()
-  }
-
-  const onDeleteContact = (contactId: string) => {
-    showDeleteModal()
-  }
-
   const { session } = useAuth()
   if(!session) {
     return <Redirect href={'/(auth)/login'} />
   }
 
   const { data: contacts, isLoading, error } = useContactList();
+
+  const [visible, setVisible] = useState(false);
+  const [name, setName] = useState('')
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+  const { mutate: createContact } = useCreateContact()
+
+  const [deleteModalvisible, setDeleteModalVisible] = useState(false);
+  const showDeleteModal = () => setDeleteModalVisible(true);
+  const hideDeleteModal = () => setDeleteModalVisible(false);
+  const { mutate: deleteContact } = useDeleteContact()
+  const [contactToDelete, setContactToDelete] = useState<string | null>(null);
+
+  const colorScheme = useColorScheme();
+  const cardBackground = colorScheme === 'dark' ? '#2a3238ff' : '#F7F7F7';
+
+  const onAddContact = async () => {
+    if (name.length < 3) {
+      console.log('Name is too short!')
+      return
+    } 
+    createContact(name)
+    console.log(`Contact ${name} was added to database!`)
+    hideModal()
+  }
+
+  const onDeleteContact = (contactId: string) => {
+    setContactToDelete(contactId)
+    console.log("Do usuniecia zostal wybrany: " + contactToDelete)
+    showDeleteModal()
+  }
 
   if (isLoading) {
     return <CustomActivityIndicator />;
@@ -67,7 +73,7 @@ const LocalContacts = () => {
 
       <Portal>
         <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={[styles.modalStyle, {backgroundColor: cardBackground}]}>
-          <ThemedText style={styles.text}>Name:</ThemedText>
+          <ThemedText style={styles.text}>Name the new contact.</ThemedText>
           <CustomInputField placeholder='Name' value={name} onChangeText={setName}/>
           <Button buttonColor={Colors.light.buttonColor} icon="" mode="contained" style={styles.submitButton} onPress={onAddContact}>
             <Text style={{color: 'white'}}>Add New Contact</Text>
@@ -80,9 +86,14 @@ const LocalContacts = () => {
         modalText={'Are you sure you want to delete this contact?'} 
         actionButtonText={'Delete'} 
         onDismiss={hideDeleteModal} 
-        onActionButtonPress={() => console.log('usuwanie...')} 
+        onActionButtonPress={() => {
+          if(contactToDelete !== null) {
+            deleteContact(contactToDelete)
+            hideDeleteModal()
+          }
+        }} 
       />
-
+      
     </View>
   )
 }
@@ -103,7 +114,7 @@ const styles = StyleSheet.create({
   modalStyle : {
     padding: 20,
     alignSelf: 'center',
-    width: '70%',
+    width: '80%',
     borderRadius: 20
   },
   submitButton: {
@@ -112,9 +123,9 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   text: {
-    fontSize: 15,
     marginLeft: 5,
     marginTop: 5,
-    marginBottom: 5,
+    marginBottom: 10,
+    textAlign: 'center'
   },
 })

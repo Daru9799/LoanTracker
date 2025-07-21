@@ -16,6 +16,7 @@ import { randomUUID } from 'expo-crypto'
 import * as FileSystem from 'expo-file-system'
 import { decode } from 'base64-arraybuffer'
 import CustomActivityIndicator from '@/src/components/CustomActivityIndicator';
+import UserPickerModal from '@/src/components/UserPickerModal';
 
 const Create = () => {
   const [itemName, setItemName] = useState('')
@@ -38,6 +39,12 @@ const Create = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const router = useRouter()
+
+  //UserPickerModal
+  const [pickerModalVisible, setPickerModalVisible] = useState(false);
+  const [selectedBorrowerUserId, setSelectedBorrowerUserId] = useState<string | null>(null);
+  const [selectedBorrowerContactId, setSelectedBorrowerContactId] = useState<string | null>(null);
+
 
   const addItemToList = async (title: string, quantity: string, borrowed_at: Date, category_id: string, description: string | null, return_at: Date | null, image_url: string | null) => {
     let fileUrl: string | null = null
@@ -180,7 +187,6 @@ const Create = () => {
     return <CustomActivityIndicator style={styles.activityIndicator} />
   }
 
-
   return (
     <ThemedView style={styles.container}>
       <ScrollView>
@@ -268,9 +274,13 @@ const Create = () => {
               Open Camera
             </Button>
           </ThemedView>
-
         </List.Accordion>
-          
+
+        <ThemedText style={styles.text}>Borrower User: </ThemedText>
+          <Button onPress={() => setPickerModalVisible(true)}>
+            <Text>Choose borrowed user</Text>
+          </Button>
+
           <Button buttonColor={Colors.light.buttonColor} icon="" mode="contained" style={styles.submitButton} onPress={submitForm}>
             <Text style={{color: 'white'}}>Add New Item</Text>
           </Button>
@@ -285,6 +295,22 @@ const Create = () => {
           minimumDate={datePickerType === 'return' ? dayjs(borrowedDate).add(1, 'day').toDate() : undefined}
         />
       )}
+
+      <UserPickerModal 
+        visible={pickerModalVisible}
+        onDismiss={() => setPickerModalVisible(false)} 
+        onSelect={(id, type) => {
+          if(type === 'contact') {
+            setSelectedBorrowerUserId(null)
+            setSelectedBorrowerContactId(id)
+          }
+          if(type === 'friend') {
+            setSelectedBorrowerContactId(null)
+            setSelectedBorrowerUserId(id)
+          }
+          console.log(`Wybrano: ${id} (${type})`)
+        }
+      }/>
 
       <Snackbar
         visible={visible}

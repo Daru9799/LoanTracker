@@ -8,22 +8,29 @@ import ThemedView from './ThemedView'
 
 type ContactCardProps = {
     contact: Contact;
-    onDeleteIconPress: () => void;
+    onDeleteIconPress?: () => void;
+    onPress?: () => void;
+    isSelected?: boolean;
 }
 
-const ContactCard = ({contact, onDeleteIconPress} : ContactCardProps) => {
+const ContactCard = ({contact, onDeleteIconPress, onPress, isSelected} : ContactCardProps) => {
   return (
-    <ThemedView style={styles.itemCard}>
-      <View style={styles.rowWrapper}>
-            <View style={styles.label}>
-                <User color={Colors.light.buttonColor} size={22} strokeWidth={2} />
-                <ThemedText>{contact.name}</ThemedText>
-            </View>
-            <Pressable onPress={onDeleteIconPress} hitSlop={10}>
-                <Trash2 color='red' size={22} hitSlop={10}/>
-            </Pressable>
-      </View>
-    </ThemedView>
+    <Pressable onPress={onPress}>
+      <ThemedView style={[styles.itemCard, isSelected && styles.selectedCard ]}>
+        <View style={styles.rowWrapper}>
+              <View style={styles.label}>
+                  <User color={Colors.light.buttonColor} size={22} strokeWidth={2} />
+                  <ThemedText>{contact.name}</ThemedText>
+              </View>
+              {onDeleteIconPress && 
+                <Pressable onPress={onDeleteIconPress} hitSlop={10}>
+                    <Trash2 color='red' size={22} hitSlop={10}/>
+                </Pressable>
+              }
+        </View>
+      </ThemedView>
+    </Pressable>
+
   )
 }
 
@@ -43,4 +50,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
   },
+  selectedCard : {
+    borderColor: Colors.light.buttonColor,
+    borderWidth: 2,
+  }
 })
