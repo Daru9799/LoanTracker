@@ -43,16 +43,16 @@ const UserPickerModal = ({ visible, onDismiss, onSelect }: Props) => {
     <Portal>
       <Dialog visible={visible} onDismiss={resetModal}>
         <Dialog.Title>
-          {step === 1 ? 'Wybierz typ użytkownika' : 'Wybierz użytkownika'}
+          {step === 1 ? 'Choose user type' : 'Choose user'}
         </Dialog.Title>
         <Dialog.Content>
           {step === 1 ? (
             <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
               <Button mode="contained" onPress={() => { setUserType('friend'); setStep(2); }}>
-                Znajomy
+                Friend
               </Button>
               <Button mode="contained" onPress={() => { setUserType('contact'); setStep(2); }}>
-                Kontakt lokalny
+                Local Contact
               </Button>
             </View>
           ) : (
@@ -81,10 +81,10 @@ const UserPickerModal = ({ visible, onDismiss, onSelect }: Props) => {
           )}
         </Dialog.Content>
         <Dialog.Actions>
-          {step === 2 && <Button onPress={() => setStep(1)}>Wstecz</Button>}
+          {step === 2 && <Button onPress={() => setStep(1)}>Go Back</Button>}
           {step === 2 && (
             <Button disabled={!selectedId} onPress={handleConfirm}>
-              Zatwierdź
+              Accept
             </Button>
           )}
         </Dialog.Actions>

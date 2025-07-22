@@ -27,6 +27,28 @@ export const useContactList = () => {
   });
 };
 
+export const useContactDetails = (contactId: string | null) => {
+  return useQuery<Contact>({
+    queryKey: ['user_contacts', contactId],
+    queryFn: async () => {
+
+    const { data: contact, error } = await supabase
+        .from('contacts')
+        .select('*')
+        .eq('id', contactId)
+        .single()
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      console.log(`Contact info: `);
+      console.log(contact);
+      return contact
+    },
+  });
+};
+
 export const useCreateContact = () => {
   const { session } = useAuth();
   const id = session?.user.id;
@@ -66,6 +88,7 @@ export const useDeleteContact = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({queryKey: ['user_contacts']})
+      await queryClient.invalidateQueries({queryKey: ['user_items']})
     }
   })
 }

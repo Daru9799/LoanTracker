@@ -11,6 +11,7 @@ import { Button, FAB, Modal, Portal } from 'react-native-paper'
 import CustomInputField from '../components/CustomInputField'
 import { Colors } from '../constants/Colors'
 import CustomDecisionModal from '../components/CustomDecisionModal'
+import CustomAddIcon from '../components/CustomAddIcon'
 
 const LocalContacts = () => {
   const { session } = useAuth()
@@ -63,13 +64,9 @@ const LocalContacts = () => {
       <FlatList 
         data={contacts}
         renderItem={({item}) => <ContactCard contact={item} onDeleteIconPress={() => onDeleteContact(item.id)} />}
-        contentContainerStyle={{gap: 10, padding: 10}}
+        contentContainerStyle={{gap: 10, padding: 10, paddingBottom: 80}}
       />
-      <FAB
-        icon="plus"
-        style={styles.fab}
-        onPress={showModal}
-      />
+      <CustomAddIcon onPress={showModal}/>
 
       <Portal>
         <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={[styles.modalStyle, {backgroundColor: cardBackground}]}>
@@ -83,7 +80,7 @@ const LocalContacts = () => {
 
       <CustomDecisionModal 
         visible={deleteModalvisible} 
-        modalText={'Are you sure you want to delete this contact?'} 
+        modalText={'Are you sure you want to delete this contact? This will also delete all items linked to this contact.'} 
         actionButtonText={'Delete'} 
         onDismiss={hideDeleteModal} 
         onActionButtonPress={() => {

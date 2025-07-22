@@ -2,16 +2,14 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import ThemedText from '../components/ThemedText'
 
-const Friends = () => {
+const MyLoans = () => {
   return (
     <View>
-      <ThemedText>Friends</ThemedText>
+      <ThemedText>MyLoans</ThemedText>
     </View>
   )
 }
 
-export default Friends
+export default MyLoans
 
-const styles = StyleSheet.create({
-    
-})
+const styles = StyleSheet.create({})

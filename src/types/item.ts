@@ -14,4 +14,5 @@ export interface Item {
   //Dodatkowe pola
   borrower_username?: string
   category_name?: string
+  borrower_contact_name? : string
 }

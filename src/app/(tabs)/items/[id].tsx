@@ -55,11 +55,6 @@ const ItemDetails = () => {
 
   const closeMenu = () => setMenuVisible(false);
 
-  const onEditPress = () => {
-    console.log('Edit clicked!')
-    closeMenu()
-  }
-
   const onRemovePress = () => {
     console.log('Remove clicked!')
     closeMenu()
@@ -70,7 +65,7 @@ const ItemDetails = () => {
     return <ActivityIndicator />;
   }
   if (error) {
-    return <ThemedText>Failed to fetch test data!</ThemedText>;
+    return <ThemedText>Failed to fetch data!</ThemedText>;
   }
 
   if(!item) {
@@ -104,8 +99,6 @@ const ItemDetails = () => {
             }
             anchorPosition="bottom"
           >
-            <Menu.Item onPress={onEditPress} title="Edit" disabled={isPending}/>
-            <Divider />
             <Menu.Item onPress={onRemovePress} title="Remove" disabled={isPending}/>
           </Menu>
         </Appbar.Header>

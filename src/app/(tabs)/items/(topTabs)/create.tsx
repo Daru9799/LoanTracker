@@ -17,6 +17,9 @@ import * as FileSystem from 'expo-file-system'
 import { decode } from 'base64-arraybuffer'
 import CustomActivityIndicator from '@/src/components/CustomActivityIndicator';
 import UserPickerModal from '@/src/components/UserPickerModal';
+import ContactCard from '@/src/components/ContactCard';
+import { Contact } from '@/src/types/contact';
+import { useContactDetails } from '@/src/api/contacts';
 
 const Create = () => {
   const [itemName, setItemName] = useState('')
@@ -44,13 +47,17 @@ const Create = () => {
   const [pickerModalVisible, setPickerModalVisible] = useState(false);
   const [selectedBorrowerUserId, setSelectedBorrowerUserId] = useState<string | null>(null);
   const [selectedBorrowerContactId, setSelectedBorrowerContactId] = useState<string | null>(null);
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
+  const { data: contact } = useContactDetails(selectedBorrowerContactId)
 
 
-  const addItemToList = async (title: string, quantity: string, borrowed_at: Date, category_id: string, description: string | null, return_at: Date | null, image_url: string | null) => {
+  const addItemToList = async () => {
+    if (itemCategoryId === null) return
     let fileUrl: string | null = null
+
     setIsLoading(true)
     try {
-      if(image_url !== null) {
+      if(itemImage !== null) {
         const uploadedUrl = await uploadImage()
         if (uploadedUrl === undefined) { //Jeśli zwróci undefined (czyli coś pójdzie nie tak) to wywali błąd
           setVisible(true)
@@ -60,13 +67,14 @@ const Create = () => {
       }
 
       createItem({
-        itemTitle: title,
-        itemQuantity: parseInt(quantity, 10),
-        itemBorrowedDate: borrowed_at,
-        itemCategoryId: category_id,
-        itemDescription: description,
-        itemReturnDate: return_at,
-        itemImageUrl: fileUrl
+        itemTitle: itemName,
+        itemQuantity: parseInt(itemQuantity, 10),
+        itemBorrowedDate: borrowedDate,
+        itemCategoryId: itemCategoryId,
+        itemDescription: itemDescription,
+        itemReturnDate: isDateReturnSelected ? returnDate : null,
+        itemImageUrl: isImageSelected ? fileUrl : null,
+        borrowerContactId: selectedBorrowerContactId
       }, {onSuccess: onItemAddedSuccess})
     } finally {
       setIsLoading(false);
@@ -147,15 +155,7 @@ const Create = () => {
       return
     }
 
-    addItemToList(
-      itemName, 
-      itemQuantity, 
-      borrowedDate, 
-      itemCategoryId, 
-      itemDescription, 
-      isDateReturnSelected ? returnDate : null, 
-      isImageSelected ? itemImage : null
-    )
+    addItemToList()
     clearForm()
   }
 
@@ -276,14 +276,27 @@ const Create = () => {
           </ThemedView>
         </List.Accordion>
 
-        <ThemedText style={styles.text}>Borrower User: </ThemedText>
-          <Button onPress={() => setPickerModalVisible(true)}>
-            <Text>Choose borrowed user</Text>
-          </Button>
+        <ThemedView style={styles.borrowerCard}>
+            <ThemedText style={styles.sectionTitle}>Borrower User</ThemedText>
+            {selectedBorrowerContactId && contact &&
+              <ContactCard contact={contact} />
+            }
+            {!selectedBorrowerContactId && !selectedBorrowerUserId &&
+              <Button onPress={() => setPickerModalVisible(true)}>
+                <Text>Choose borrower user/contact</Text>
+              </Button>
+              }
+        </ThemedView>
 
-          <Button buttonColor={Colors.light.buttonColor} icon="" mode="contained" style={styles.submitButton} onPress={submitForm}>
-            <Text style={{color: 'white'}}>Add New Item</Text>
-          </Button>
+        {(selectedBorrowerContactId || selectedBorrowerUserId) && 
+            <Button onPress={() => setPickerModalVisible(true)}>
+              <Text>Change borrower user/contact</Text>
+            </Button>
+        }   
+
+        <Button buttonColor={Colors.light.buttonColor} icon="" mode="contained" style={styles.submitButton} onPress={submitForm}>
+          <Text style={{color: 'white'}}>Add New Item</Text>
+        </Button>
       </ScrollView>
 
       {show && (
@@ -372,9 +385,21 @@ const styles = StyleSheet.create({
   submitButton: {
     width: '90%',
     alignSelf: 'center',
-    marginVertical: 10
+    marginVertical: 20
   },
   activityIndicator : {
     marginTop: 10
+  },
+  borrowerCard: {
+    padding: 12,
+    borderRadius: 20,
+    marginVertical: 10,
+    marginHorizontal: 5,
+    borderWidth: 2,
+    borderColor: '#0a7ea4',
+  },
+  sectionTitle: {
+    fontSize: 15,
+    marginBottom: 8,
   }
 })

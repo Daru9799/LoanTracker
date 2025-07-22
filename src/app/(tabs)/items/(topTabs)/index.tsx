@@ -7,13 +7,13 @@ import CustomActivityIndicator from '@/src/components/CustomActivityIndicator';
 
 export default function ItemsMainScreen() {
 
-  const { data: items, isLoading, error } = useItemList({isArchived: false});
+  const { data: items, isLoading, error } = useItemList({isArchived: false, sortAscending: true});
 
   if (isLoading) {
     return <CustomActivityIndicator style={styles.activityIndicator} />;
   }
   if (error) {
-    return <ThemedText>Failed to fetch test data!</ThemedText>;
+    return <ThemedText>Failed to fetch data!</ThemedText>;
   }
 
   //const items = mockItems.filter((item) => item.is_returned === false) //Przypisanie przykladowych itemów (w ramach testów)

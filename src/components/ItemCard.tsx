@@ -20,7 +20,8 @@ type ItemCardProps = {
 const ItemCard = ({item, archived=false} : ItemCardProps) => {
   const [isLate, setIsLate] = useState(false)
   //Konwersja dat
-  const relativeBorrowedDate = dayjs().to(item.borrowed_at);
+  const isBorrowedToday = dayjs().isSame(item.borrowed_at, 'day');
+  const relativeBorrowedDate = isBorrowedToday ? 'Today' : dayjs().to(item.borrowed_at);
   const relativeReturnDate = item.return_at ? dayjs().to(item.return_at) : 'TBD';
 
   //Kolorki
@@ -56,8 +57,8 @@ const ItemCard = ({item, archived=false} : ItemCardProps) => {
 
           <View style={styles.itemRow}>
             <Contact2 color={Colors.light.buttonColor} size={22} strokeWidth={2} />
-            <ThemedText style={styles.contentText}>{ item.borrower_username ?? item.borrower_contact_id ?? 'Undefined User' //!kontakty
-              /* W zależności od przyjętej wartości null wybiera odpowiednią osobę (rozwiązanie tymczasowe) */ }
+            <ThemedText style={styles.contentText}>{ item.borrower_username ?? item.borrower_contact_name ?? 'Undefined User'
+              /* W zależności od przyjętej wartości null wybiera odpowiednią osobę */ }
             </ThemedText>
           </View>
       </View>

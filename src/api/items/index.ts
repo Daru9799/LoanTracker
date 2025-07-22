@@ -17,7 +17,7 @@ export const useItemList = ({isArchived, sortAscending = false}: useItemListProp
     queryFn: async () => {
 
       let query = supabase.from('items')
-        .select('*, profiles:borrower_user_id (username)')
+        .select('*, profiles:borrower_user_id (username), contacts: borrower_contact_id (name)')
         .eq('owner_id', id);
 
       if (isArchived !== undefined) {
@@ -38,6 +38,7 @@ export const useItemList = ({isArchived, sortAscending = false}: useItemListProp
       return data.map(item => ({
         ...item, 
         borrower_username: item.profiles?.username ?? null,
+        borrower_contact_name: item.contacts?.name ?? null,
       }));
     },
   });
@@ -118,7 +119,8 @@ type useCreateItemProps = {
   itemCategoryId: string;
   itemDescription : string | null;
   itemReturnDate: Date | null;
-  itemImageUrl: string | null
+  itemImageUrl: string | null;
+  borrowerContactId: string | null;
 }
 
 export const useCreateItem = () => {
@@ -127,7 +129,7 @@ export const useCreateItem = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({itemTitle, itemQuantity, itemBorrowedDate, itemCategoryId, itemDescription, itemReturnDate, itemImageUrl} : useCreateItemProps) => {
+    mutationFn: async ({itemTitle, itemQuantity, itemBorrowedDate, itemCategoryId, itemDescription, itemReturnDate, itemImageUrl, borrowerContactId} : useCreateItemProps) => {
       const { error } = await supabase.from('items')
       .insert({
         'title': itemTitle,
@@ -137,7 +139,8 @@ export const useCreateItem = () => {
         'owner_id': id,
         'description' : itemDescription,
         'return_at': itemReturnDate,
-        'image_url': itemImageUrl
+        'image_url': itemImageUrl,
+        'borrower_contact_id' : borrowerContactId
       })
 
       if(error) {

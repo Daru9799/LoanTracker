@@ -6,7 +6,7 @@ import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import QueryProvider from '../providers/QueryProvider';
 import AuthProvider from '../providers/AuthProvider';
-import { User, PiggyBank, Archive, Clock9, Users, Ghost } from 'lucide-react-native';
+import { User, PiggyBank, Archive, Clock9, Users, Ghost, HandCoins, Landmark, ChartSpline } from 'lucide-react-native';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -38,7 +38,7 @@ export default function RootLayout() {
                 drawerIcon: ({ color, size }) => (
                 <Ghost size={size} color={color} />
               ) }} />
-              <Drawer.Screen name="friends" options={{ 
+              <Drawer.Screen name="(friends)" options={{ 
                 title: 'Friends', 
                 drawerIcon: ({ color, size }) => (
                 <Users size={size} color={color} />
@@ -47,6 +47,16 @@ export default function RootLayout() {
                 title: 'Profile', 
                 drawerIcon: ({ color, size }) => (
                 <User size={size} color={color} />
+              ) }} />
+              <Drawer.Screen name="myLoans" options={{ 
+                title: 'My Loans', 
+                drawerIcon: ({ color, size }) => (
+                <Landmark size={size} color={color} />
+              ) }} />
+              <Drawer.Screen name="stats" options={{ 
+                title: 'Statistics', 
+                drawerIcon: ({ color, size }) => (
+                <ChartSpline size={size} color={color} />
               ) }} />
               <Drawer.Screen name="(auth)" options={{ headerShown: false, drawerItemStyle: { display: 'none' } }} />
             </Drawer>
