@@ -12,6 +12,7 @@ import CustomInputField from '../components/CustomInputField'
 import { Colors } from '../constants/Colors'
 import CustomDecisionModal from '../components/CustomDecisionModal'
 import CustomAddIcon from '../components/CustomAddIcon'
+import NewContactModal from '../components/NewContactModal'
 
 const LocalContacts = () => {
   const { session } = useAuth()
@@ -32,9 +33,6 @@ const LocalContacts = () => {
   const hideDeleteModal = () => setDeleteModalVisible(false);
   const { mutate: deleteContact } = useDeleteContact()
   const [contactToDelete, setContactToDelete] = useState<string | null>(null);
-
-  const colorScheme = useColorScheme();
-  const cardBackground = colorScheme === 'dark' ? '#2a3238ff' : '#F7F7F7';
 
   const onAddContact = async () => {
     if (name.length < 3) {
@@ -68,15 +66,15 @@ const LocalContacts = () => {
       />
       <CustomAddIcon onPress={showModal}/>
 
-      <Portal>
-        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={[styles.modalStyle, {backgroundColor: cardBackground}]}>
-          <ThemedText style={styles.text}>Name the new contact.</ThemedText>
-          <CustomInputField placeholder='Name' value={name} onChangeText={setName}/>
-          <Button buttonColor={Colors.light.buttonColor} icon="" mode="contained" style={styles.submitButton} onPress={onAddContact}>
-            <Text style={{color: 'white'}}>Add New Contact</Text>
-          </Button>
-        </Modal>
-      </Portal>
+      <NewContactModal 
+        visible={visible} 
+        hideModal={hideModal} 
+        value={name}
+        onChangeText={setName}
+        onAddContact={onAddContact}
+        title='Name the new contact.' 
+        buttonText='Add New Contact'
+      />
 
       <CustomDecisionModal 
         visible={deleteModalvisible} 
@@ -101,28 +99,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginBottom: 40
-  },
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  },
-  modalStyle : {
-    padding: 20,
-    alignSelf: 'center',
-    width: '80%',
-    borderRadius: 20
-  },
-  submitButton: {
-    width: '100%',
-    alignSelf: 'center',
-    marginTop: 20
-  },
-  text: {
-    marginLeft: 5,
-    marginTop: 5,
-    marginBottom: 10,
-    textAlign: 'center'
-  },
+  }
 })

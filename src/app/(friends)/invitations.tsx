@@ -5,6 +5,9 @@ import { Divider } from 'react-native-paper'
 import UserCard from '@/src/components/UserCard'
 import { Colors } from '@/src/constants/Colors'
 import CustomAddIcon from '@/src/components/CustomAddIcon'
+import { useFriendInvitationsList } from '@/src/api/relations'
+import { Redirect } from 'expo-router'
+import { useAuth } from '@/src/providers/AuthProvider'
 
 type DummyUser = {
     username: string
@@ -20,16 +23,27 @@ const users: DummyUser[] = [
 ];
 
 const Invitations = () => {
+  const { session } = useAuth()
+  if(!session) {
+    return <Redirect href={'/(auth)/login'} />
+  }
+  const { data: invitations } = useFriendInvitationsList()
+
   return (
     <View style={styles.container}>
         <View>
             <ThemedText style={styles.title}>Invitations</ThemedText>
-            <FlatList 
-                style={styles.list}
-                data={users}
-                renderItem={({item}) => <UserCard username={item.username} iconColor={Colors.light.purpleColor} onAcceptIconPress={() => console.log('Accepted')} onDeclineIconPress={() => console.log('Declined')}/>}
-                contentContainerStyle={{gap: 10, padding: 10, paddingBottom: 80}}
-            />
+            { invitations ? (
+                <FlatList 
+                    style={styles.list}
+                    data={invitations}
+                    renderItem={({item}) => <UserCard username={item.sender_username} iconColor={Colors.light.purpleColor} onAcceptIconPress={() => console.log('Accepted')} onDeclineIconPress={() => console.log('Declined')}/>}
+                    contentContainerStyle={{gap: 10, padding: 10, paddingBottom: 80}}
+                />
+            ) : (
+                <ThemedText>You dont have any invitations!</ThemedText>
+            )}
+
         </View>
 
         <View>
