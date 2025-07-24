@@ -4,6 +4,9 @@ import { Button, Dialog, Portal } from 'react-native-paper';
 import { useContactList } from '../api/contacts';
 import ContactCard from './ContactCard';
 import ThemedText from './ThemedText';
+import { useFriendsList } from '../api/relations';
+import UserCard from './UserCard';
+import { useAuth } from '../providers/AuthProvider';
 
 type UserType = 'friend' | 'contact';
 
@@ -14,12 +17,15 @@ type Props = {
 };
 
 const UserPickerModal = ({ visible, onDismiss, onSelect }: Props) => {
+  const { session } = useAuth()
   const [step, setStep] = useState<1 | 2>(1);
   const [userType, setUserType] = useState<UserType | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   //API data
   const { data: contacts, isLoading, error } = useContactList();
+
+  const { data: friends } = useFriendsList();
 
   const resetModal = () => {
     setStep(1);
@@ -70,12 +76,16 @@ const UserPickerModal = ({ visible, onDismiss, onSelect }: Props) => {
                     />
                 }
                 {userType === 'friend' &&
-                    <View>
-                        <ThemedText>Lista znajomych</ThemedText>
-                        <Button onPress={() => setSelectedId('znajomy1')}>
-                            Dummy friend
-                        </Button>
-                    </View>
+                    <FlatList 
+                        data={friends}
+                        renderItem={({item}) => <UserCard
+                            username={item.sender_id === session?.user.id ? item.receiver_username : item.sender_username}       
+                            onPress={() => setSelectedId(item.sender_id === session?.user.id ? item.receiver_id : item.sender_id)}
+                            isSelected={(item.sender_id === session?.user.id ? item.receiver_id : item.sender_id) === selectedId}
+                        />}
+                        contentContainerStyle={{gap: 10, padding: 10}}
+                        style={styles.contactList}
+                    />
                 }                
             </View>
           )}

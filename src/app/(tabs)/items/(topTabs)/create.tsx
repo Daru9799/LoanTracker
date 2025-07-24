@@ -47,7 +47,6 @@ const Create = () => {
   const [pickerModalVisible, setPickerModalVisible] = useState(false);
   const [selectedBorrowerUserId, setSelectedBorrowerUserId] = useState<string | null>(null);
   const [selectedBorrowerContactId, setSelectedBorrowerContactId] = useState<string | null>(null);
-  const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
   const { data: contact } = useContactDetails(selectedBorrowerContactId)
 
 

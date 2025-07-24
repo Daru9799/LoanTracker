@@ -12,7 +12,6 @@ import RemoteImage from '@/src/components/RemoteImage'
 
 const ItemDetails = () => {
   const { id } = useLocalSearchParams()
-  //const item = mockItems.find((item) => item.id == id)
   const { data: item, isLoading, error } = useItemDetails(id.toString());
   const { mutate: updateItem } = useUpdateItemStatus();
   const { mutate: deleteItem, isPending } = useDeleteItem();
