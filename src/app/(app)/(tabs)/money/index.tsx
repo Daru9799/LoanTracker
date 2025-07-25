@@ -1,22 +1,23 @@
-import { useItemDetails } from '@/src/api/items';
+import { useCurrenciesList } from '@/src/api/currencies';
+import CurrencyPickerModal from '@/src/components/CurrencyPickerModal';
 import ThemedText from '@/src/components/ThemedText';
 import ThemedView from '@/src/components/ThemedView';
-import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { FlatList, StyleSheet } from 'react-native';
+import { Button } from 'react-native-paper';
 
 export default function MoneyMainScreen() {
-
-  const { data: item, isLoading, error } = useItemDetails('d633f2a8-957f-424f-8acd-11faff974f8b');
-
-  if (isLoading) {
-    return <ActivityIndicator />;
-  }
-  if (error) {
-    return <ThemedText>Failed to fetch test data!</ThemedText>;
-  }
+  const [currencyModalVisible, setCurrencyModalVisible] = useState(false)
 
   return (
-    <ThemedView>
-      <ThemedText>Test data:</ThemedText>
+    <ThemedView style={{flex: 1}}>
+      <Button onPress={() => setCurrencyModalVisible(true)}>Choose currency</Button>
+
+      <CurrencyPickerModal 
+        visible={currencyModalVisible} 
+        onDismiss={() => setCurrencyModalVisible(false)} 
+        onSelect={(code) =>  console.log('selected code: ' + code)}
+      />
     </ThemedView>
   );
 }

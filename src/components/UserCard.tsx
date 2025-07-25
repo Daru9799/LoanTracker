@@ -6,7 +6,7 @@ import { Colors } from '../constants/Colors'
 import ThemedView from './ThemedView'
 
 type UserCardProps = {
-    username: String;
+    username: string;
     onDeleteIconPress?: () => void;
     iconColor?: string;
     onPress?: () => void;
