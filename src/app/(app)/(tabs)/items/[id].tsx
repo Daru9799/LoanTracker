@@ -1,7 +1,6 @@
-import { StyleSheet, Image, useColorScheme, ActivityIndicator } from 'react-native'
+import { StyleSheet, useColorScheme, ActivityIndicator } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { Link, useLocalSearchParams, useRouter } from 'expo-router'
-import { mockItems } from '@/assets/data/mockItems'
 import ThemedView from '@/src/components/ThemedView'
 import { Appbar, Divider, List, Menu, SegmentedButtons, Snackbar } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'

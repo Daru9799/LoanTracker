@@ -1,20 +1,14 @@
 import { StyleSheet, Text } from 'react-native'
 import React from 'react'
-import ThemedView from '../components/ThemedView'
-import ThemedText from '../components/ThemedText'
+import ThemedView from '@/src/components/ThemedView'
+import ThemedText from '@/src/components/ThemedText'
 import { Button } from 'react-native-paper'
-import { supabase } from '../lib/supabase'
-import { Redirect } from 'expo-router'
-import { useAuth } from '../providers/AuthProvider'
+import { supabase } from '@/src/lib/supabase'
+import { useAuth } from '@/src/providers/AuthProvider'
 
 const Profile = () => {    
   const { session } = useAuth()
-  if(!session) {
-    return <Redirect href={'/(auth)/login'} />
-  }
-
-  const user = session.user
-
+  const user = session?.user
   
   return (
     <ThemedView style={styles.container}>

@@ -10,7 +10,6 @@ import ThemedView from '@/src/components/ThemedView';
 import { Colors } from '@/src/constants/Colors';
 import { useCategoriesList } from '@/src/api/categories';
 import { useCreateItem } from '@/src/api/items';
-import { useRouter } from 'expo-router';
 import { supabase } from '@/src/lib/supabase';
 import { randomUUID } from 'expo-crypto'
 import * as FileSystem from 'expo-file-system'
@@ -20,7 +19,6 @@ import UserPickerModal from '@/src/components/UserPickerModal';
 import ContactCard from '@/src/components/ContactCard';
 import { useContactDetails } from '@/src/api/contacts';
 import UserCard from '@/src/components/UserCard';
-import { useAuth } from '@/src/providers/AuthProvider';
 import { useFriendDetails } from '@/src/api/profiles';
 
 const Create = () => {
@@ -49,9 +47,6 @@ const Create = () => {
   const [selectedBorrowerContactId, setSelectedBorrowerContactId] = useState<string | null>(null);
   const { data: contact } = useContactDetails(selectedBorrowerContactId)
   const { data: friend } = useFriendDetails(selectedBorrowerUserId)
-
-  const { session } = useAuth()
-
 
   const addItemToList = async () => {
     if (itemCategoryId === null) return

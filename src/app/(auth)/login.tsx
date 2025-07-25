@@ -102,8 +102,7 @@ const styles = StyleSheet.create({
     },
     loginContainer: {
       alignSelf: 'center',
-      position: 'absolute',
-      bottom: 30,
+      marginBottom: 60
     },
     welcomeText: {
       fontSize: 40,

@@ -1,4 +1,4 @@
-import { Alert, Pressable, StyleSheet, Text } from 'react-native'
+import { Pressable, StyleSheet, Text } from 'react-native'
 import React, { useState } from 'react'
 import ThemedView from '@/src/components/ThemedView'
 import ThemedText from '@/src/components/ThemedText'
@@ -148,7 +148,6 @@ const styles = StyleSheet.create({
     },
     registerContainer: {
       alignSelf: 'center',
-      position: 'absolute',
-      bottom: 30,
+      marginBottom: 60
     },
 })

@@ -1,21 +1,17 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet,View } from 'react-native'
 import React, { useState } from 'react'
-import ThemedText from '../../components/ThemedText'
+import ThemedText from '@/src/components/ThemedText'
 import CustomAddIcon from '@/src/components/CustomAddIcon'
 import NewContactModal from '@/src/components/NewContactModal'
 import { useDeleteRelation, useFriendsList, useSendFriendRequest } from '@/src/api/relations'
 import CustomWarningDialog from '@/src/components/CustomWarningDialog'
 import { useAuth } from '@/src/providers/AuthProvider'
-import { Redirect } from 'expo-router'
 import UserCard from '@/src/components/UserCard'
 import { Colors } from '@/src/constants/Colors'
 import CustomDecisionModal from '@/src/components/CustomDecisionModal'
 
 const Friends = () => {
   const { session } = useAuth()
-  if(!session) {
-    return <Redirect href={'/(auth)/login'} />
-  }
   const [name, setName] = useState('')
   const [visible, setVisible] = useState(false);
   const showModal = () => setVisible(true);
@@ -64,7 +60,7 @@ const Friends = () => {
         {(friends && friends?.length > 0) ? (
             <FlatList
                 data={friends}
-                renderItem={({item}) => <UserCard username={item.sender_id === session.user.id ? item.receiver_username : item.sender_username} iconColor={Colors.light.purpleColor} onDeclineIconPress={() => onDeleteFriend(item.id)} />}
+                renderItem={({item}) => <UserCard username={item.sender_id === session?.user.id ? item.receiver_username : item.sender_username} iconColor={Colors.light.purpleColor} onDeclineIconPress={() => onDeleteFriend(item.id)} />}
                 contentContainerStyle={{gap: 10, padding: 10, paddingBottom: 80}}
             />
         ) : (

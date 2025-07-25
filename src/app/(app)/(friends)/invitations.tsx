@@ -1,19 +1,12 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import ThemedText from '@/src/components/ThemedText'
-import { Divider } from 'react-native-paper'
 import UserCard from '@/src/components/UserCard'
 import { Colors } from '@/src/constants/Colors'
 import CustomAddIcon from '@/src/components/CustomAddIcon'
 import { useAcceptFriendRequest, useDeleteRelation, useFriendInvitationsList, usePendingList } from '@/src/api/relations'
-import { Redirect } from 'expo-router'
-import { useAuth } from '@/src/providers/AuthProvider'
 
 const Invitations = () => {
-  const { session } = useAuth()
-  if(!session) {
-    return <Redirect href={'/(auth)/login'} />
-  }
   const { data: invitations } = useFriendInvitationsList()
   const { data: pending } = usePendingList()
   const { mutate: acceptFriendRequest } = useAcceptFriendRequest()

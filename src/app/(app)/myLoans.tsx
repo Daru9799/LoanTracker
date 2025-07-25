@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native'
 import React from 'react'
-import ThemedText from '../components/ThemedText'
+import ThemedText from '@/src/components/ThemedText'
 
 const MyLoans = () => {
   return (

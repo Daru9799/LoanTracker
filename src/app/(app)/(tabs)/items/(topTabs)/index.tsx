@@ -16,8 +16,6 @@ export default function ItemsMainScreen() {
     return <ThemedText>Failed to fetch data!</ThemedText>;
   }
 
-  //const items = mockItems.filter((item) => item.is_returned === false) //Przypisanie przykladowych itemów (w ramach testów)
-
   return (
       <ThemedView style={styles.container}>
         <FlatList 

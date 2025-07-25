@@ -1,16 +1,13 @@
-import { ActivityIndicator, StyleSheet, Text, useColorScheme, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, useColorScheme } from 'react-native'
 import React from 'react'
 import Timeline from 'react-native-timeline-flatlist'
-import { mockItems } from '@/assets/data/mockItems';
-import { checkIsLate } from '../functions';
-import ThemedView from '../components/ThemedView';
-import { Colors } from '../constants/Colors';
+import { checkIsLate } from '@/src/functions';
+import ThemedView from '@/src/components/ThemedView';
+import { Colors } from '@/src/constants/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
-import { useAuth } from '../providers/AuthProvider';
-import { Redirect } from 'expo-router';
-import ThemedText from '../components/ThemedText';
-import { useItemList } from '../api/items';
+import ThemedText from '@/src/components/ThemedText';
+import { useItemList } from '@/src/api/items';
 import dayjs from 'dayjs';
 
 function formatDate(date: string|undefined) {
@@ -25,12 +22,6 @@ function formatDate(date: string|undefined) {
 }
 
 export default function MyTimeline() {
-    const { session } = useAuth()
-    
-    if(!session) {
-      return <Redirect href={'/(auth)/login'} />
-    }
-
     const { data: items, isLoading, error } = useItemList({sortAscending: false});
 
     console.log(items)

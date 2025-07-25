@@ -1,22 +1,15 @@
-import { StyleSheet, useColorScheme, View, Text } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React, { useState } from 'react'
-import ThemedText from '../components/ThemedText'
-import { useContactList, useCreateContact, useDeleteContact } from '../api/contacts'
-import CustomActivityIndicator from '../components/CustomActivityIndicator'
+import ThemedText from '@/src/components/ThemedText'
+import { useContactList, useCreateContact, useDeleteContact } from '@/src/api/contacts'
+import CustomActivityIndicator from '@/src/components/CustomActivityIndicator'
 import { FlatList } from 'react-native-gesture-handler'
-import { useAuth } from '../providers/AuthProvider'
-import { Redirect } from 'expo-router'
-import ContactCard from '../components/ContactCard'
-import CustomDecisionModal from '../components/CustomDecisionModal'
-import CustomAddIcon from '../components/CustomAddIcon'
-import NewContactModal from '../components/NewContactModal'
+import ContactCard from '@/src/components/ContactCard'
+import CustomDecisionModal from '@/src/components/CustomDecisionModal'
+import CustomAddIcon from '@/src/components/CustomAddIcon'
+import NewContactModal from '@/src/components/NewContactModal'
 
 const LocalContacts = () => {
-  const { session } = useAuth()
-  if(!session) {
-    return <Redirect href={'/(auth)/login'} />
-  }
-
   const { data: contacts, isLoading, error } = useContactList();
 
   const [visible, setVisible] = useState(false);
