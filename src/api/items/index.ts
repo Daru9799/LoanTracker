@@ -121,6 +121,7 @@ type useCreateItemProps = {
   itemReturnDate: Date | null;
   itemImageUrl: string | null;
   borrowerContactId: string | null;
+  borrowerUserId: string | null;
 }
 
 export const useCreateItem = () => {
@@ -129,7 +130,7 @@ export const useCreateItem = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({itemTitle, itemQuantity, itemBorrowedDate, itemCategoryId, itemDescription, itemReturnDate, itemImageUrl, borrowerContactId} : useCreateItemProps) => {
+    mutationFn: async ({itemTitle, itemQuantity, itemBorrowedDate, itemCategoryId, itemDescription, itemReturnDate, itemImageUrl, borrowerContactId, borrowerUserId} : useCreateItemProps) => {
       const { error } = await supabase.from('items')
       .insert({
         'title': itemTitle,
@@ -140,7 +141,8 @@ export const useCreateItem = () => {
         'description' : itemDescription,
         'return_at': itemReturnDate,
         'image_url': itemImageUrl,
-        'borrower_contact_id' : borrowerContactId
+        'borrower_contact_id' : borrowerContactId,
+        'borrower_user_id' : borrowerUserId
       })
 
       if(error) {

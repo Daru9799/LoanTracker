@@ -58,10 +58,11 @@ export default function RootLayout() {
                 drawerIcon: ({ color, size }) => (
                 <ChartSpline size={size} color={color} />
               ) }} />
+
               <Drawer.Screen name="(auth)" options={{ headerShown: false, drawerItemStyle: { display: 'none' } }} />
             </Drawer>
           </QueryProvider>
-         </AuthProvider> 
+         </AuthProvider>
       </ThemeProvider>
     </PaperProvider>
   </SafeAreaProvider>

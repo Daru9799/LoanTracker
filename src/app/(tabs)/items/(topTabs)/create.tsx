@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import CustomInputField from '@/src/components/CustomInputField'
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
-import { List, Checkbox, Chip, Button, Portal, Dialog, Snackbar } from 'react-native-paper';
+import { List, Checkbox, Chip, Button, Snackbar } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import ThemedText from '@/src/components/ThemedText';
 import ThemedView from '@/src/components/ThemedView';
@@ -18,8 +18,10 @@ import { decode } from 'base64-arraybuffer'
 import CustomActivityIndicator from '@/src/components/CustomActivityIndicator';
 import UserPickerModal from '@/src/components/UserPickerModal';
 import ContactCard from '@/src/components/ContactCard';
-import { Contact } from '@/src/types/contact';
 import { useContactDetails } from '@/src/api/contacts';
+import UserCard from '@/src/components/UserCard';
+import { useAuth } from '@/src/providers/AuthProvider';
+import { useFriendDetails } from '@/src/api/profiles';
 
 const Create = () => {
   const [itemName, setItemName] = useState('')
@@ -41,13 +43,14 @@ const Create = () => {
   const { mutate: createItem } = useCreateItem()
   const [isLoading, setIsLoading] = useState(false)
 
-  const router = useRouter()
-
   //UserPickerModal
   const [pickerModalVisible, setPickerModalVisible] = useState(false);
   const [selectedBorrowerUserId, setSelectedBorrowerUserId] = useState<string | null>(null);
   const [selectedBorrowerContactId, setSelectedBorrowerContactId] = useState<string | null>(null);
   const { data: contact } = useContactDetails(selectedBorrowerContactId)
+  const { data: friend } = useFriendDetails(selectedBorrowerUserId)
+
+  const { session } = useAuth()
 
 
   const addItemToList = async () => {
@@ -73,7 +76,8 @@ const Create = () => {
         itemDescription: itemDescription,
         itemReturnDate: isDateReturnSelected ? returnDate : null,
         itemImageUrl: isImageSelected ? fileUrl : null,
-        borrowerContactId: selectedBorrowerContactId
+        borrowerContactId: selectedBorrowerContactId,
+        borrowerUserId: selectedBorrowerUserId
       }, {onSuccess: onItemAddedSuccess})
     } finally {
       setIsLoading(false);
@@ -279,6 +283,9 @@ const Create = () => {
             <ThemedText style={styles.sectionTitle}>Borrower User</ThemedText>
             {selectedBorrowerContactId && contact &&
               <ContactCard contact={contact} />
+            }
+            {selectedBorrowerUserId && friend &&
+              <UserCard username={friend.username} />
             }
             {!selectedBorrowerContactId && !selectedBorrowerUserId &&
               <Button onPress={() => setPickerModalVisible(true)}>
