@@ -6,11 +6,13 @@ import CustomActivityIndicator from '@/src/components/CustomActivityIndicator'
 import { FlatList } from 'react-native-gesture-handler'
 import ContactCard from '@/src/components/ContactCard'
 import CustomDecisionModal from '@/src/components/CustomDecisionModal'
-import CustomAddIcon from '@/src/components/CustomAddIcon'
 import NewContactModal from '@/src/components/NewContactModal'
+import { FAB } from 'react-native-paper'
+import ImportContactModal from '@/src/components/ImportContactModal'
 
 const LocalContacts = () => {
   const { data: contacts, isLoading, error } = useContactList();
+  const [open, setOpen] = useState(false);
 
   const [visible, setVisible] = useState(false);
   const [name, setName] = useState('')
@@ -23,6 +25,10 @@ const LocalContacts = () => {
   const hideDeleteModal = () => setDeleteModalVisible(false);
   const { mutate: deleteContact } = useDeleteContact()
   const [contactToDelete, setContactToDelete] = useState<string | null>(null);
+
+  const [visibleImportModal, setVisibleImportModal] = useState(false);
+  const showImportModal = () => setVisibleImportModal(true);
+  const hideImportModal = () => setVisibleImportModal(false);
 
   const onAddContact = async () => {
     if (name.length < 3) {
@@ -40,6 +46,11 @@ const LocalContacts = () => {
     showDeleteModal()
   }
 
+  const onImportContacts = (selectedContacts: string[]) => {
+    console.log(`${selectedContacts}`)
+    hideImportModal()
+  }
+
   if (isLoading) {
     return <CustomActivityIndicator />;
   }
@@ -52,9 +63,36 @@ const LocalContacts = () => {
       <FlatList 
         data={contacts}
         renderItem={({item}) => <ContactCard contact={item} onDeleteIconPress={() => onDeleteContact(item.id)} />}
-        contentContainerStyle={{gap: 10, padding: 10, paddingBottom: 80}}
+        contentContainerStyle={{gap: 10, padding: 10, paddingBottom: 130}}
       />
-      <CustomAddIcon onPress={showModal}/>
+
+      <FAB.Group
+        open={open}
+        visible
+        icon={open ? 'close' : 'plus'}
+        onStateChange={({ open }) => setOpen(open)}
+        actions={[
+          {
+            icon: 'phone-plus',
+            label: 'Import Contacts',
+            onPress: showImportModal,
+          },
+          {
+            icon: 'account-plus',
+            label: 'Add Contact',
+            onPress: showModal,
+          },
+        ]}
+      />
+
+      <ImportContactModal 
+        visible={visibleImportModal} 
+        hideModal={hideImportModal} 
+        onImportContacts={(selectedContacts) => {
+            onImportContacts(selectedContacts)
+          }
+        }
+      />
 
       <NewContactModal 
         visible={visible} 
@@ -87,7 +125,6 @@ export default LocalContacts
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginBottom: 40
+    flex: 1
   }
 })

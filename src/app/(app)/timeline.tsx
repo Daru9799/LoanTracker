@@ -1,14 +1,14 @@
-import { ActivityIndicator, StyleSheet, useColorScheme } from 'react-native'
+import { ActivityIndicator, StyleSheet } from 'react-native'
 import React from 'react'
 import Timeline from 'react-native-timeline-flatlist'
 import { checkIsLate } from '@/src/functions';
 import ThemedView from '@/src/components/ThemedView';
-import { Colors } from '@/src/constants/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 import ThemedText from '@/src/components/ThemedText';
 import { useItemList } from '@/src/api/items';
 import dayjs from 'dayjs';
+import useThemeColors from '@/src/hooks/useThemeColors';
 
 function formatDate(date: string|undefined) {
   console.log(dayjs(date))
@@ -23,12 +23,7 @@ function formatDate(date: string|undefined) {
 
 export default function MyTimeline() {
     const { data: items, isLoading, error } = useItemList({sortAscending: false});
-
-    console.log(items)
-
-    const colorScheme = useColorScheme();
-    const themeColors = Colors[colorScheme ?? 'light'];
-    const titleColor = themeColors.text;
+    const { normalTextColor } = useThemeColors();
 
     //Format danych pod timeline
     const isLate = (date1: Date | undefined, isReturned: boolean) => {
@@ -62,7 +57,7 @@ export default function MyTimeline() {
             circleSize={22}
             lineColor="#009688"
             timeStyle={[styles.timeStyle]}
-            titleStyle={{color: titleColor}}
+            titleStyle={{color: normalTextColor}}
             descriptionStyle={styles.descriptionStyle}
             isUsingFlatlist={false}
           />

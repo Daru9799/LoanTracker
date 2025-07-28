@@ -58,7 +58,8 @@
     "react-native-timeline-flatlist": "^0.8.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.20.0",
-    "react-native-webview": "13.13.5"
+    "react-native-webview": "13.13.5",
+    "expo-contacts": "~14.2.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

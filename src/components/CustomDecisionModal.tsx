@@ -1,9 +1,10 @@
-import { StyleSheet, Text, useColorScheme, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Button, Modal, Portal } from 'react-native-paper';
 import { Colors } from '../constants/Colors';
 import ThemedText from './ThemedText';
 import { Trash } from 'lucide-react-native';
+import useThemeColors from '../hooks/useThemeColors';
 
 type CustomModalProps = {
     visible: boolean;
@@ -14,13 +15,12 @@ type CustomModalProps = {
 }
 
 const CustomDecisionModal = ({visible, modalText, actionButtonText, onDismiss, onActionButtonPress} : CustomModalProps) => {
-  const colorScheme = useColorScheme();
-  const cardBackground = colorScheme === 'dark' ? '#2a3238ff' : '#F7F7F7';
+  const { cardBackgroundDark } = useThemeColors();
   
   return (
     <View>
         <Portal>
-            <Modal style={styles.modalPosition} visible={visible} onDismiss={onDismiss} contentContainerStyle={[styles.modalStyle, {backgroundColor: cardBackground}]}>
+            <Modal style={styles.modalPosition} visible={visible} onDismiss={onDismiss} contentContainerStyle={[styles.modalStyle, {backgroundColor: cardBackgroundDark}]}>
                 <ThemedText style={styles.modalText}>{modalText}</ThemedText>
 
                 <View style={styles.rowWrapper}>

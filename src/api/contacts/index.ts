@@ -71,7 +71,7 @@ export const useCreateContact = () => {
       await queryClient.invalidateQueries({queryKey: ['user_contacts']})
     }
   })
-}
+};
 
 export const useDeleteContact = () => {
   const queryClient = useQueryClient()
@@ -91,4 +91,4 @@ export const useDeleteContact = () => {
       await queryClient.invalidateQueries({queryKey: ['user_items']})
     }
   })
-}
+};

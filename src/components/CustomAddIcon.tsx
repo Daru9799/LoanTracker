@@ -2,11 +2,18 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { FAB } from 'react-native-paper'
 
-const CustomAddIcon = ({ onPress }: { onPress: () => void }) => {
+type CustomAddIconProps = {
+  onPress: () => void;
+  bottom?: number;
+  icon?: string;
+  label?: string;
+};
+
+const CustomAddIcon = ({ onPress, bottom = 0, icon = "account-plus" } : CustomAddIconProps) => {
   return (
       <FAB
-        icon="plus"
-        style={styles.fab}
+        icon={icon}
+        style={[styles.fab, {bottom}]}
         onPress={onPress}
       />
   )
@@ -19,6 +26,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     margin: 16,
     right: 0,
-    bottom: 0,
   },
 })

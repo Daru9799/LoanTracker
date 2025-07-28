@@ -1,13 +1,13 @@
-import { StyleSheet, useColorScheme, ActivityIndicator } from 'react-native'
+import { StyleSheet, ActivityIndicator } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { Link, useLocalSearchParams, useRouter } from 'expo-router'
 import ThemedView from '@/src/components/ThemedView'
-import { Appbar, Divider, List, Menu, SegmentedButtons, Snackbar } from 'react-native-paper'
+import { Appbar, List, Menu, SegmentedButtons, Snackbar } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'
-import { Colors } from '@/src/constants/Colors'
 import ThemedText from '@/src/components/ThemedText'
 import { useDeleteItem, useItemDetails, useUpdateItemStatus } from '@/src/api/items'
 import RemoteImage from '@/src/components/RemoteImage'
+import useThemeColors from '@/src/hooks/useThemeColors'
 
 const ItemDetails = () => {
   const { id } = useLocalSearchParams()
@@ -20,8 +20,7 @@ const ItemDetails = () => {
   const [menuVisible, setMenuVisible] = useState(false)
   const [status, setStatus] = useState(item?.is_returned)
 
-  const colorScheme = useColorScheme();
-  const themeColors = Colors[colorScheme ?? 'light'];
+  const { themeColors } = useThemeColors();
 
   const updateIsReturnedStatus = (is_returned: boolean) => {
     updateItem({itemId: id.toString(), is_returned}, {onSuccess: router.back})

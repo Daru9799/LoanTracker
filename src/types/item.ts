@@ -12,7 +12,7 @@ export interface Item {
   return_at?: Date;
   is_returned: boolean;
   //Dodatkowe pola
-  borrower_username?: string
-  category_name?: string
-  borrower_contact_name? : string
+  borrower_username?: string;
+  category_name?: string;
+  borrower_contact_name? : string;
 }

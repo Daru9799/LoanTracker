@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Item } from '../types/item'
 import dayjs from 'dayjs';
@@ -6,9 +6,9 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { CalendarClock, Calendar, Contact2 } from 'lucide-react-native';
 import { checkIsLate } from '../functions';
 import { Link } from 'expo-router';
-import { useColorScheme } from 'react-native';
 import ThemedText from './ThemedText';
 import { Colors } from '../constants/Colors';
+import useThemeColors from '../hooks/useThemeColors';
 
 dayjs.extend(relativeTime)
 
@@ -25,17 +25,14 @@ const ItemCard = ({item, archived=false} : ItemCardProps) => {
   const relativeReturnDate = item.return_at ? dayjs().to(item.return_at) : 'TBD';
 
   //Kolorki
-  const colorScheme = useColorScheme();
-  const cardBackground = colorScheme === 'dark' ? '#1E1E1E' : '#F7F7F7';
-  const themeColors = Colors[colorScheme ?? 'light'];
-  const normalTextColor = themeColors.text;
+  const { cardBackground, normalTextColor } = useThemeColors();
 
   useEffect(() => {
     setIsLate(checkIsLate(item.return_at, item.is_returned));
   }, []);
 
   return (
-    <Link href={{ pathname: '/(tabs)/items/[id]', params: { id: String(item.id) } }}>
+    <Link href={{ pathname: '/items/[id]', params: { id: String(item.id) } }}>
       <View style={[styles.itemCard, {backgroundColor: cardBackground}]}>
           <ThemedText style={styles.title}>{item.title}</ThemedText>
           <View style={styles.rowWrapper}>

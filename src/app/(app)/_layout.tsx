@@ -1,6 +1,6 @@
 import 'react-native-reanimated';
 import { Drawer } from 'expo-router/drawer'
-import { User, PiggyBank, Archive, Clock9, Users, Ghost, Landmark, ChartSpline } from 'lucide-react-native';
+import { User, PiggyBank, Archive, Clock9, Users, Ghost, Landmark, ChartSpline, FlaskConical } from 'lucide-react-native';
 import AuthGuard from '@/src/components/AuthGuard';
 
 export default function AppLayout() {
@@ -18,8 +18,8 @@ export default function AppLayout() {
           drawerIcon: ({ color, size }) => (
           <Clock9 size={size} color={color} />
         ) }} />
-        <Drawer.Screen name="archived" options={{ 
-          title: 'Archived Items',
+        <Drawer.Screen name="(archived)" options={{ 
+          title: 'Archived Items/Loans',
           drawerIcon: ({ color, size }) => (
           <Archive size={size} color={color} />
         ) }} />

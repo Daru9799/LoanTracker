@@ -1,9 +1,10 @@
-import { StyleSheet, Text, TextInputProps, useColorScheme, View } from 'react-native'
+import { StyleSheet, Text, TextInputProps } from 'react-native'
 import React from 'react'
 import { Button, Modal, Portal } from 'react-native-paper'
 import ThemedText from './ThemedText'
 import CustomInputField from './CustomInputField'
 import { Colors } from '../constants/Colors'
+import useThemeColors from '../hooks/useThemeColors'
 
 type NewContactModalProps = {
     visible: boolean;
@@ -14,8 +15,7 @@ type NewContactModalProps = {
 } & TextInputProps;
 
 const NewContactModal = ({visible, hideModal, onAddContact, value, onChangeText, title, buttonText} : NewContactModalProps) => {
-  const colorScheme = useColorScheme();
-  const cardBackground = colorScheme === 'dark' ? '#2a3238ff' : '#F7F7F7';
+  const { cardBackground } = useThemeColors();
       
   return (
       <Portal>
