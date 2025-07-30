@@ -15,7 +15,13 @@ export const useContacts = () => {
           fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
         });
 
-        setContacts(data ?? []);
+        //Odfiltrowanie kontaktów z taką samą nazwą (usunięcie duplikatów)
+        const uniqueContacts = (data ?? []).filter(
+          (contact, index, self) =>
+            contact.name && self.findIndex(c => c.name === contact.name) === index
+        );
+
+        setContacts(uniqueContacts);
       } else {
         setPermissionGranted(false);
         setContacts([]);

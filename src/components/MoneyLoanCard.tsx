@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MoneyLoan } from '../types/money_loan'
 import ThemedText from './ThemedText';
 import { Link } from 'expo-router';
@@ -7,6 +7,7 @@ import { Banknote, Calendar, CalendarClock, Contact2 } from 'lucide-react-native
 import { Colors } from '../constants/Colors';
 import useThemeColors from '../hooks/useThemeColors';
 import dayjs from 'dayjs';
+import { checkIsLate } from '../functions';
 
 type MoneyLoanCardProps = {
     moneyLoan: MoneyLoan;
@@ -20,6 +21,9 @@ const MoneyLoanCard = ({moneyLoan, archived=false} : MoneyLoanCardProps) => {
   const relativeBorrowedDate = isBorrowedToday ? 'Today' : dayjs().to(moneyLoan.borrowed_at);
   const relativeReturnDate = moneyLoan.return_at ? dayjs().to(moneyLoan.return_at) : 'TBD';
 
+  useEffect(() => {
+    setIsLate(checkIsLate(moneyLoan.return_at));
+  }, []);
 
   const { cardBackground, normalTextColor } = useThemeColors();
 

@@ -140,7 +140,6 @@ const Create = () => {
   };
 
   const submitForm = () => {
-    //console.log(`Submit: ${itemName}, ${itemDescription}, ${itemQuantity},  ${borrowedDate.toLocaleDateString()}, ${returnDate.toLocaleDateString()}, ${itemCategory}, ${itemImage}`)
     if(itemName.length < 3) {
       setError("Name is too short!")
       setVisible(true)

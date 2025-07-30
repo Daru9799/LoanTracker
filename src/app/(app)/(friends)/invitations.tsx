@@ -52,7 +52,7 @@ const Invitations = () => {
             )}
         </View>
 
-        <CustomAddIcon onPress={() => console.log('Add new friend')}/>
+        {/* <CustomAddIcon onPress={() => console.log('Add new friend')}/> */}
     </View>
   )
 }

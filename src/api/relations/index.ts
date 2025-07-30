@@ -154,25 +154,3 @@ export const useDeleteRelation = () => {
     }
   })
 }
-
-export const useFriendDetails = (friendId: string | null) => {
-  return useQuery<Relation>({
-    queryKey: ['user_relation_details', friendId],
-    queryFn: async () => {
-
-    const { data: friend, error } = await supabase
-        .from('relations')
-        .select('*')
-        .eq('id', friendId)
-        .single()
-
-      if (error) {
-        throw new Error(error.message);
-      }
-      
-      console.log(`Contact info: `);
-      console.log(friend);
-      return friend
-    },
-  });
-};

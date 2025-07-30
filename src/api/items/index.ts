@@ -48,7 +48,7 @@ export const useItemDetails = (itemId: string) => {
   return useQuery<Item>({
     queryKey: ['user_items', itemId],
     queryFn: async () => {
-      const { data, error } = await supabase.from('items').select('*, profiles:borrower_user_id (username), categories:category_id (name)').eq('id', itemId).single();
+      const { data, error } = await supabase.from('items').select('*, profiles:borrower_user_id (username), categories:category_id (name), contacts: borrower_contact_id (name)').eq('id', itemId).single();
       if (error) {
         throw new Error(error.message);
       }
@@ -57,6 +57,7 @@ export const useItemDetails = (itemId: string) => {
       return {
         ...data,
         borrower_username: data.profiles?.username ?? null,
+        borrower_contact_name: data.contacts?.name ?? null,
         category_name: data.categories?.name ?? null,
       };
     },

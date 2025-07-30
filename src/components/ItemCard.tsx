@@ -28,7 +28,7 @@ const ItemCard = ({item, archived=false} : ItemCardProps) => {
   const { cardBackground, normalTextColor } = useThemeColors();
 
   useEffect(() => {
-    setIsLate(checkIsLate(item.return_at, item.is_returned));
+    setIsLate(checkIsLate(item.return_at));
   }, []);
 
   return (

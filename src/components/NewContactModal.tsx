@@ -15,15 +15,18 @@ type NewContactModalProps = {
 } & TextInputProps;
 
 const NewContactModal = ({visible, hideModal, onAddContact, value, onChangeText, title, buttonText} : NewContactModalProps) => {
-  const { cardBackground } = useThemeColors();
+  const { cardBackgroundDark } = useThemeColors();
       
   return (
       <Portal>
-        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={[styles.modalStyle, {backgroundColor: cardBackground}]}>
+        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={[styles.modalStyle, {backgroundColor: cardBackgroundDark}]}>          
           <ThemedText style={styles.text}>{title}</ThemedText>
-          <CustomInputField placeholder='Name' value={value} onChangeText={onChangeText}/>
-          <Button buttonColor={Colors.light.buttonColor} icon="" mode="contained" style={styles.submitButton} onPress={onAddContact}>
+          <CustomInputField style={styles.field} placeholder='Name' value={value} onChangeText={onChangeText}/>
+          <Button buttonColor={Colors.light.greenColor} icon="" mode="contained" style={styles.submitButton} onPress={onAddContact}>
             <Text style={{color: 'white'}}>{buttonText}</Text>
+          </Button>
+          <Button buttonColor={Colors.light.warningButtonColor} icon="" mode="contained" style={styles.submitButton} onPress={hideModal}>
+            <Text style={{color: 'white'}}>Cancel</Text>
           </Button>
         </Modal>
       </Portal>
@@ -34,7 +37,7 @@ export default NewContactModal
 
 const styles = StyleSheet.create({
   modalStyle : {
-    padding: 20,
+    padding: 15,
     alignSelf: 'center',
     width: '80%',
     borderRadius: 20
@@ -42,12 +45,15 @@ const styles = StyleSheet.create({
   submitButton: {
     width: '100%',
     alignSelf: 'center',
-    marginTop: 20
+    marginBottom: 10
   },
   text: {
     marginLeft: 5,
     marginTop: 5,
     marginBottom: 10,
     textAlign: 'center'
+  },
+  field: {
+    marginBottom: 20
   }
 })

@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native'
 import React, { useState } from 'react'
 import ThemedText from '@/src/components/ThemedText'
-import { useContactList, useCreateContact, useDeleteContact } from '@/src/api/contacts'
+import { useContactList, useCreateContact, useDeleteContact, useImportMultipleContacts } from '@/src/api/contacts'
 import CustomActivityIndicator from '@/src/components/CustomActivityIndicator'
 import { FlatList } from 'react-native-gesture-handler'
 import ContactCard from '@/src/components/ContactCard'
@@ -9,6 +9,7 @@ import CustomDecisionModal from '@/src/components/CustomDecisionModal'
 import NewContactModal from '@/src/components/NewContactModal'
 import { FAB } from 'react-native-paper'
 import ImportContactModal from '@/src/components/ImportContactModal'
+import { BlurView } from 'expo-blur';
 
 const LocalContacts = () => {
   const { data: contacts, isLoading, error } = useContactList();
@@ -30,6 +31,8 @@ const LocalContacts = () => {
   const showImportModal = () => setVisibleImportModal(true);
   const hideImportModal = () => setVisibleImportModal(false);
 
+  const { mutate: importContacts} = useImportMultipleContacts()
+
   const onAddContact = async () => {
     if (name.length < 3) {
       console.log('Name is too short!')
@@ -47,8 +50,7 @@ const LocalContacts = () => {
   }
 
   const onImportContacts = (selectedContacts: string[]) => {
-    console.log(`${selectedContacts}`)
-    hideImportModal()
+    importContacts(selectedContacts)
   }
 
   if (isLoading) {
@@ -60,6 +62,7 @@ const LocalContacts = () => {
   
   return (
     <View style={styles.container}>
+
       <FlatList 
         data={contacts}
         renderItem={({item}) => <ContactCard contact={item} onDeleteIconPress={() => onDeleteContact(item.id)} />}

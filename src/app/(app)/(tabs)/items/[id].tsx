@@ -8,6 +8,7 @@ import ThemedText from '@/src/components/ThemedText'
 import { useDeleteItem, useItemDetails, useUpdateItemStatus } from '@/src/api/items'
 import RemoteImage from '@/src/components/RemoteImage'
 import useThemeColors from '@/src/hooks/useThemeColors'
+import StatusToggleButtons from '@/src/components/StatusToggleButtons'
 
 const ItemDetails = () => {
   const { id } = useLocalSearchParams()
@@ -18,8 +19,7 @@ const ItemDetails = () => {
   const router = useRouter()
 
   const [menuVisible, setMenuVisible] = useState(false)
-  const [status, setStatus] = useState(item?.is_returned)
-
+  
   const { themeColors } = useThemeColors();
 
   const updateIsReturnedStatus = (is_returned: boolean) => {
@@ -33,16 +33,6 @@ const ItemDetails = () => {
     }
   })
   }
-  
-  const isFirstRender = useRef(true);
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    console.log(`Status itemu ${item?.title} został zmieniony na ${status}`)
-    if(status != undefined) updateIsReturnedStatus(status)
-  }, [status]);
 
   const goBack = () => {
     router.back()
@@ -81,6 +71,7 @@ const ItemDetails = () => {
   return (
     <ThemedView style={styles.container}>
       <ScrollView> 
+
         <Appbar.Header statusBarHeight={0} mode='center-aligned' style={{backgroundColor: themeColors.background}}>
           <Appbar.BackAction onPress={goBack} size={25} />
           <Appbar.Content title={`${item?.title}`} titleStyle={styles.titleText}/>
@@ -118,6 +109,10 @@ const ItemDetails = () => {
             />
           }
           <List.Item
+            title={`${item.borrower_username ?? item.borrower_contact_name ?? 'Undefined User'}`}
+            left={() => <List.Icon icon="account-outline" />}
+          />
+          <List.Item
             title={`${item?.quantity}`}
             left={() => <List.Icon icon="cube-outline" />}
           />
@@ -134,24 +129,15 @@ const ItemDetails = () => {
             left={() => <List.Icon icon="shape-outline" />}
           />
         </List.Section>
-        
-        {!item.is_returned &&
-        <SegmentedButtons
-          value={status ? 'true' : 'false'}
-          onValueChange={(value) => setStatus(value === 'true')}
-          buttons={[
-            {
-              value: 'false',
-              label: 'Not Returned',
-              disabled: isPending
-            },
-            {
-              value: 'true',
-              label: 'Returned',
-              disabled: isPending
-            },
-          ]}
+         
+        {!item.is_returned && <StatusToggleButtons 
+          initialStatus={item?.is_returned ?? false} 
+          onStatusChange={(newStatus) => {
+            updateIsReturnedStatus(newStatus)
+          }} 
+          disabled={isPending}
         /> }
+
         </ScrollView>
         {isPending &&
         <Snackbar

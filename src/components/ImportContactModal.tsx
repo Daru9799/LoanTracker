@@ -1,11 +1,12 @@
-import { FlatList, StyleSheet, Text } from 'react-native'
+import { FlatList, Pressable, StyleSheet, Text } from 'react-native'
 import React, { useState } from 'react'
-import { Button, Modal, Portal } from 'react-native-paper'
+import { Button, Icon, IconButton, Modal, Portal } from 'react-native-paper'
 import ThemedText from './ThemedText'
 import { Colors } from '../constants/Colors'
 import useThemeColors from '../hooks/useThemeColors'
 import { useContacts } from '../hooks/useContacts'
 import ImportedContactCard from './ImportedContactCard'
+import CloseIcon from './CloseIcon'
 
 type ImportContactModalProps = {
     visible: boolean;
@@ -14,10 +15,15 @@ type ImportContactModalProps = {
 }
 
 const ImportContactModal = ({visible, hideModal, onImportContacts} : ImportContactModalProps) => {
-  const { cardBackground } = useThemeColors();
+  const { cardBackgroundDark } = useThemeColors();
   const { contacts, loadingContacts, permissionGranted } = useContacts();
 
   const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
+
+  const resetModal = () => {
+    setSelectedContacts([])
+    hideModal();
+  };
 
   const toggleSelect = (name: string) => {
     setSelectedContacts(prev =>
@@ -35,25 +41,31 @@ const ImportContactModal = ({visible, hideModal, onImportContacts} : ImportConta
 
   return (
     <Portal>
-        <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={[styles.modalStyle, {backgroundColor: cardBackground}]}>
-            <ThemedText style={styles.text}>Choose contacts to import.</ThemedText>
-            <FlatList
-                data={contacts}
-                renderItem={({item}) => <ImportedContactCard
-                    contact={item}
-                    onPress={() => item.name && toggleSelect(item.name)}
-                    isSelected={item.name ? selectedContacts.includes(item.name) : false}
-                />}
-                contentContainerStyle={{gap: 10, padding: 10}}
-            />
-            <Button
-                buttonColor={Colors.light.buttonColor} 
-                icon="" 
-                mode="contained" 
-                style={styles.submitButton} 
-                onPress={() => onImportContacts(selectedContacts)}
-                disabled={selectedContacts.length === 0}>
-                <Text style={{color: 'white'}}>Accept</Text>
+        <Modal visible={visible} onDismiss={resetModal} contentContainerStyle={[styles.modalStyle, {backgroundColor: cardBackgroundDark}]}>
+
+          <CloseIcon hideModal={hideModal} />
+
+          <ThemedText style={styles.text}>Choose contacts to import.</ThemedText>
+          <FlatList
+              data={contacts}
+              renderItem={({item}) => <ImportedContactCard
+                  contact={item}
+                  onPress={() => item.name && toggleSelect(item.name)}
+                  isSelected={item.name ? selectedContacts.includes(item.name) : false}
+              />}
+              contentContainerStyle={{gap: 10, padding: 10}}
+          />
+          <Button
+              buttonColor={Colors.light.buttonColor} 
+              icon="" 
+              mode="contained" 
+              style={styles.submitButton} 
+              onPress={() => {
+                onImportContacts(selectedContacts)
+                resetModal()
+              }}
+              disabled={selectedContacts.length === 0}>
+              <Text style={{color: 'white'}}>Accept</Text>
             </Button>
         </Modal>
     </Portal>

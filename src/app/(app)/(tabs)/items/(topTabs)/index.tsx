@@ -4,10 +4,13 @@ import ThemedView from '@/src/components/ThemedView';
 import { useItemList } from '@/src/api/items';
 import ThemedText from '@/src/components/ThemedText';
 import CustomActivityIndicator from '@/src/components/CustomActivityIndicator';
+import { useTranslation } from 'react-i18next';
 
 export default function ItemsMainScreen() {
 
   const { data: items, isLoading, error } = useItemList({isArchived: false, sortAscending: true});
+
+  const { t } = useTranslation()
 
   if (isLoading) {
     return <CustomActivityIndicator style={styles.activityIndicator} />;
@@ -18,6 +21,7 @@ export default function ItemsMainScreen() {
 
   return (
       <ThemedView style={styles.container}>
+        <ThemedText>{t('welcomeMessage')}</ThemedText>
         <FlatList 
           data={items}
           renderItem={({item}) => <ItemCard item={item}></ItemCard>}

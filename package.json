@@ -28,6 +28,7 @@
     "expo-blur": "~14.1.5",
     "expo-checkbox": "~4.1.4",
     "expo-constants": "~17.1.7",
+    "expo-contacts": "~14.2.5",
     "expo-crypto": "~14.1.5",
     "expo-font": "~13.3.2",
     "expo-haptics": "~14.1.4",
@@ -41,10 +42,12 @@
     "expo-symbols": "~0.4.5",
     "expo-system-ui": "~5.0.10",
     "expo-web-browser": "~14.2.0",
+    "i18next": "^25.3.2",
     "lucide-react": "^0.525.0",
     "lucide-react-native": "^0.525.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "react-i18next": "^15.6.1",
     "react-native": "0.79.5",
     "react-native-date-picker": "^5.0.13",
     "react-native-dotenv": "^3.4.11",
@@ -58,8 +61,7 @@
     "react-native-timeline-flatlist": "^0.8.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.20.0",
-    "react-native-webview": "13.13.5",
-    "expo-contacts": "~14.2.5"
+    "react-native-webview": "13.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

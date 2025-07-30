@@ -92,3 +92,27 @@ export const useDeleteContact = () => {
     }
   })
 };
+
+export const useImportMultipleContacts = () => {
+  const { session } = useAuth();
+  const id = session?.user.id;
+  const queryClient = useQueryClient()
+  
+  return useMutation({
+    mutationFn: async (names: string[]) => {
+        const { error } = await supabase.rpc('insert_contacts', {
+            names: names, 
+            new_owner_id: id
+        })
+
+        if(error) {
+            console.log(error)
+            throw new Error(error.message)
+        }   
+        return { success: true };
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({queryKey: ['user_contacts']})
+    }
+  })
+}

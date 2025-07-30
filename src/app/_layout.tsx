@@ -5,6 +5,7 @@ import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native
 import { useColorScheme } from 'react-native';
 import AuthProvider from '../providers/AuthProvider';
 import QueryProvider from '../providers/QueryProvider';
+import '../utils/i18n';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
