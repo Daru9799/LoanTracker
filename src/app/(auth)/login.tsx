@@ -9,6 +9,8 @@ import { supabase } from '@/src/lib/supabase'
 import { useRouter } from 'expo-router'
 import { PiggyBank } from 'lucide-react-native'
 import CustomWarningDialog from '@/src/components/CustomWarningDialog'
+import { useTranslation } from 'react-i18next'
+import LanguageSelector from '@/src/components/LanguageSelector'
 
 const Login = () => {
   const [email, setEmail] = useState<string>('')
@@ -20,6 +22,9 @@ const Login = () => {
   const router = useRouter();
 
   const hideDialog = () => setVisible(false);
+
+  //Translations
+  const { t } = useTranslation('authentication');
   
   const submitLogin = async() => {
     setLoading(true)
@@ -47,29 +52,33 @@ const Login = () => {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.welcomeText}>
-        <PiggyBank color={Colors.light.buttonColor} size={250} strokeWidth={1.5}/>
-        Welcome back
-      </ThemedText>
+
+      <LanguageSelector />
+
+      <ThemedView style={styles.headerContainer}>
+        <PiggyBank color={Colors.light.buttonColor} size={250} strokeWidth={1.5} />
+        <ThemedText style={styles.welcomeText}>{t("login.welcomeMessage")}</ThemedText>
+      </ThemedView>
+
       <ThemedView style={styles.form}>
         <ThemedView style={styles.formRow}>
-          <ThemedText>Email:</ThemedText>
-          <CustomInputField placeholder='Email' value={email} onChangeText={setEmail} />
+          <ThemedText>{t("shared.email")}:</ThemedText>
+          <CustomInputField placeholder={t("shared.email")} value={email} onChangeText={setEmail} />
         </ThemedView>
         
         <ThemedView style={styles.formRow}>
-          <ThemedText>Password:</ThemedText>
-          <CustomInputField placeholder='Password' secureTextEntry={true} value={password} onChangeText={setPassword} />
+          <ThemedText>{t("shared.password")}:</ThemedText>
+          <CustomInputField placeholder={t("shared.password")} secureTextEntry={true} value={password} onChangeText={setPassword} />
         </ThemedView>
       
         <Button buttonColor={Colors.light.buttonColor} icon="" mode="contained" style={styles.submitButton} onPress={submitLogin} disabled={loading}>
-          <Text style={{color: 'white'}}>Login</Text>
+          <Text style={{color: 'white'}}>{t("login.login")}</Text>
         </Button>
       </ThemedView>
 
       <Pressable onPress={goToRegisterForm} style={styles.loginContainer}>
         <ThemedText style={styles.loginText}>
-            You don't have an account? Sign Up
+            {t("login.redirectText")}
         </ThemedText>
       </Pressable>
 
@@ -107,9 +116,13 @@ const styles = StyleSheet.create({
     welcomeText: {
       fontSize: 40,
       textAlign: 'center',
-      marginTop: 50
+      marginTop: 10
     },
     formRow: {
       marginBottom: 15
-    }
+    },
+    headerContainer: {
+      alignItems: 'center',
+      marginTop: 50,
+    },
 })

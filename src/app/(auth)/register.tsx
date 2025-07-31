@@ -9,6 +9,8 @@ import { supabase } from '@/src/lib/supabase'
 import { UserPlus } from 'lucide-react-native'
 import { useRouter } from 'expo-router'
 import CustomWarningDialog from '@/src/components/CustomWarningDialog'
+import { useTranslation } from 'react-i18next'
+import LanguageSelector from '@/src/components/LanguageSelector'
 
 const Register = () => {
   const [email, setEmail] = useState<string>('')
@@ -21,6 +23,9 @@ const Register = () => {
   const router = useRouter();
 
   const hideDialog = () => setVisible(false);
+
+  //Translations
+  const { t } = useTranslation('authentication');
 
   const submitRegister = async() => {
     setLoading(true);
@@ -80,34 +85,38 @@ const Register = () => {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.welcomeText}>
+
+      <LanguageSelector />
+
+      <ThemedView style={styles.headerContainer}>
         <UserPlus color={Colors.light.buttonColor} size={250} strokeWidth={1.5} />
-        {"\n"}Create account
-      </ThemedText>
+        <ThemedText style={styles.welcomeText}>{t("register.welcomeMessage")}</ThemedText>
+      </ThemedView>
+
       <ThemedView style={styles.form}>
         <ThemedView style={styles.formRow}>
-          <ThemedText>Email:</ThemedText>
-          <CustomInputField placeholder='Email' value={email} onChangeText={setEmail} />
+          <ThemedText>{t("shared.email")}:</ThemedText>
+          <CustomInputField placeholder={t("shared.email")} value={email} onChangeText={setEmail} />
         </ThemedView>
 
         <ThemedView style={styles.formRow}>
-          <ThemedText>Username:</ThemedText>
-          <CustomInputField placeholder='Username' value={username} onChangeText={setUsername} />
+          <ThemedText>{t("register.username")}:</ThemedText>
+          <CustomInputField placeholder={t("register.username")} value={username} onChangeText={setUsername} />
         </ThemedView>
 
         <ThemedView style={styles.formRow}>
-          <ThemedText>Password:</ThemedText>
-          <CustomInputField placeholder='Password' secureTextEntry={true} value={password} onChangeText={setPassword} />
+          <ThemedText>{t("shared.password")}:</ThemedText>
+          <CustomInputField placeholder={t("shared.password")} secureTextEntry={true} value={password} onChangeText={setPassword} />
         </ThemedView>
 
         <Button buttonColor={Colors.light.buttonColor} icon="" mode="contained" style={styles.submitButton} onPress={submitRegister} disabled={loading}>
-          <Text style={{color: 'white'}}>Register</Text>
+          <Text style={{color: 'white'}}>{t("register.register")}</Text>
         </Button>
       </ThemedView>
 
       <Pressable onPress={goToLoginForm} style={styles.registerContainer}>
         <ThemedText style={styles.registerText}>
-            You have an account? Sign In
+            {t("register.redirectText")}
         </ThemedText>
       </Pressable>      
 
@@ -136,7 +145,7 @@ const styles = StyleSheet.create({
     welcomeText: {
       fontSize: 40,
       alignSelf: 'center',
-      marginTop: 50
+      marginTop: 10
     },
     formRow: {
       marginBottom: 15
@@ -149,5 +158,9 @@ const styles = StyleSheet.create({
     registerContainer: {
       alignSelf: 'center',
       marginBottom: 60
+    },
+    headerContainer: {
+      alignItems: 'center',
+      marginTop: 50,
     },
 })

@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
-    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@os-team/i18next-react-native-language-detector": "^1.1.6",
+    "@react-native-async-storage/async-storage": "2.1.2",
     "@react-native-community/checkbox": "^0.5.20",
     "@react-native-community/datetimepicker": "8.4.1",
     "@react-navigation/bottom-tabs": "^7.3.10",
@@ -43,12 +44,14 @@
     "expo-system-ui": "~5.0.10",
     "expo-web-browser": "~14.2.0",
     "i18next": "^25.3.2",
+    "i18next-react-native-async-storage": "^1.0.4",
     "lucide-react": "^0.525.0",
     "lucide-react-native": "^0.525.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-i18next": "^15.6.1",
     "react-native": "0.79.5",
+    "react-native-country-flag": "^2.0.2",
     "react-native-date-picker": "^5.0.13",
     "react-native-dotenv": "^3.4.11",
     "react-native-elements": "^3.4.3",
@@ -61,7 +64,8 @@
     "react-native-timeline-flatlist": "^0.8.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.20.0",
-    "react-native-webview": "13.13.5"
+    "react-native-webview": "13.13.5",
+    "expo-localization": "~16.1.6"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

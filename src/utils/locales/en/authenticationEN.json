@@ -1,0 +1,18 @@
+{
+    "shared": {
+        "selectLanguage": "Select language:",
+        "email": "Email",
+        "password": "Password"
+    },
+    "login": {
+        "welcomeMessage": "Welcome back",
+        "login": "Login",
+        "redirectText": "You don't have an account? Sign Up"
+    },
+    "register":  {
+        "welcomeMessage": "Create account",
+        "username": "Username",
+        "register": "Register",
+        "redirectText": "You have an account? Sign In"
+    }
+}
