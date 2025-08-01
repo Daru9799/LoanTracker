@@ -2,9 +2,8 @@ import dayjs from "dayjs";
 
 //Sprawdzenie czy jest opóźnienie w oddaniu itemu
 export function checkIsLate (returnDate: Date | undefined) {
-    if(!returnDate)
-    {
-        return true //Dla niezdefiniowanej daty zwracam true
+    if(!returnDate) {
+        return true //Dla niezdefiniowanej daty zwraca true
     }
     const formattedReturnDate = dayjs(returnDate);
     const now = dayjs();
@@ -13,4 +12,4 @@ export function checkIsLate (returnDate: Date | undefined) {
     } else {
       return false
     }
-  }
+}

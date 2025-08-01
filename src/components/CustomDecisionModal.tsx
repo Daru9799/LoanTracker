@@ -10,11 +10,12 @@ type CustomModalProps = {
     visible: boolean;
     modalText: string;
     actionButtonText: string;
+    cancelButtonText: string;
     onDismiss: () => void;
     onActionButtonPress: () => void
 }
 
-const CustomDecisionModal = ({visible, modalText, actionButtonText, onDismiss, onActionButtonPress} : CustomModalProps) => {
+const CustomDecisionModal = ({visible, modalText, actionButtonText, cancelButtonText, onDismiss, onActionButtonPress} : CustomModalProps) => {
   const { cardBackgroundDark } = useThemeColors();
   
   return (
@@ -25,7 +26,7 @@ const CustomDecisionModal = ({visible, modalText, actionButtonText, onDismiss, o
 
                 <View style={styles.rowWrapper}>
                     <Button buttonColor={Colors.light.buttonColor} mode="contained" style={styles.button} onPress={onDismiss}>
-                        <Text style={{color: 'white'}}>Cancel</Text>
+                        <Text style={{color: 'white'}}>{cancelButtonText}</Text>
                     </Button>
                     
                     <Button buttonColor={Colors.light.warningButtonColor} icon={({ size }) => <Trash size={size} color="white" />} mode="contained" style={styles.button} onPress={onActionButtonPress}>

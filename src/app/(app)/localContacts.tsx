@@ -9,44 +9,48 @@ import CustomDecisionModal from '@/src/components/CustomDecisionModal'
 import NewContactModal from '@/src/components/NewContactModal'
 import { FAB } from 'react-native-paper'
 import ImportContactModal from '@/src/components/ImportContactModal'
-import { BlurView } from 'expo-blur';
+import { useTranslation } from 'react-i18next'
+import CustomSnackbar from '@/src/components/CustomSnackBar'
 
 const LocalContacts = () => {
-  const { data: contacts, isLoading, error } = useContactList();
-  const [open, setOpen] = useState(false);
-
-  const [visible, setVisible] = useState(false);
-  const [name, setName] = useState('')
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
-  const { mutate: createContact } = useCreateContact()
-
+  //Modals states
+  const [newContactModalVisible, setNewContactModalVisible] = useState(false);
   const [deleteModalvisible, setDeleteModalVisible] = useState(false);
-  const showDeleteModal = () => setDeleteModalVisible(true);
-  const hideDeleteModal = () => setDeleteModalVisible(false);
-  const { mutate: deleteContact } = useDeleteContact()
-  const [contactToDelete, setContactToDelete] = useState<string | null>(null);
-
   const [visibleImportModal, setVisibleImportModal] = useState(false);
-  const showImportModal = () => setVisibleImportModal(true);
-  const hideImportModal = () => setVisibleImportModal(false);
 
+  //Contact states
+  const [name, setName] = useState('')
+  const [contactToDelete, setContactToDelete] = useState<string | null>(null);
+  const [error, setError] = useState('');
+
+  //FAB states
+  const [openFAB, setOpenFAB] = useState(false);
+
+  //SnackBar State
+  const [snackBarVisible, setSnackBarVisible] = useState(false);
+
+  //API data
+  const { data: contacts, isLoading, error: contactListError } = useContactList();
+  const { mutate: createContact } = useCreateContact()
+  const { mutate: deleteContact } = useDeleteContact()
   const { mutate: importContacts} = useImportMultipleContacts()
+
+  //Translations
+  const { t } = useTranslation(['contacts', 'common']);
 
   const onAddContact = async () => {
     if (name.length < 3) {
-      console.log('Name is too short!')
+      setError(t('tooShortNameError'))
+      setSnackBarVisible(true)
       return
     } 
     createContact(name)
-    console.log(`Contact ${name} was added to database!`)
-    hideModal()
+    setNewContactModalVisible(false)
   }
 
   const onDeleteContact = (contactId: string) => {
     setContactToDelete(contactId)
-    console.log("Do usuniecia zostal wybrany: " + contactToDelete)
-    showDeleteModal()
+    setDeleteModalVisible(true)
   }
 
   const onImportContacts = (selectedContacts: string[]) => {
@@ -56,8 +60,8 @@ const LocalContacts = () => {
   if (isLoading) {
     return <CustomActivityIndicator />;
   }
-  if (error) {
-    return <ThemedText>Failed to fetch test data!</ThemedText>;
+  if (contactListError) {
+    return <ThemedText>{t('common:failedFetchingData')}</ThemedText>;
   }
   
   return (
@@ -70,27 +74,27 @@ const LocalContacts = () => {
       />
 
       <FAB.Group
-        open={open}
+        open={openFAB}
         visible
-        icon={open ? 'close' : 'plus'}
-        onStateChange={({ open }) => setOpen(open)}
+        icon={openFAB ? 'close' : 'plus'}
+        onStateChange={({ open }) => setOpenFAB(open)}
         actions={[
           {
             icon: 'phone-plus',
-            label: 'Import Contacts',
-            onPress: showImportModal,
+            label: t('importContacts'),
+            onPress: () => setVisibleImportModal(true),
           },
           {
             icon: 'account-plus',
-            label: 'Add Contact',
-            onPress: showModal,
+            label: t('addContact'),
+            onPress: () => setNewContactModalVisible(true),
           },
         ]}
       />
 
       <ImportContactModal 
         visible={visibleImportModal} 
-        hideModal={hideImportModal} 
+        hideModal={() => setVisibleImportModal(false)} 
         onImportContacts={(selectedContacts) => {
             onImportContacts(selectedContacts)
           }
@@ -98,28 +102,32 @@ const LocalContacts = () => {
       />
 
       <NewContactModal 
-        visible={visible} 
-        hideModal={hideModal} 
+        visible={newContactModalVisible} 
+        hideModal={() => setNewContactModalVisible(false)} 
         value={name}
         onChangeText={setName}
         onAddContact={onAddContact}
-        title='Name the new contact.' 
-        buttonText='Add New Contact'
+        title={t('nameNewContact')}
+        buttonText={t('addNewContact')}
+        buttonCancelText={t('common:cancel')}
+        placeholderName={t('placeholderNameText')}
       />
 
       <CustomDecisionModal 
         visible={deleteModalvisible} 
-        modalText={'Are you sure you want to delete this contact? This will also delete all items linked to this contact.'} 
-        actionButtonText={'Delete'} 
-        onDismiss={hideDeleteModal} 
+        modalText={t('deleteConfirmationInfoText')} 
+        actionButtonText={t('delete')}
+        cancelButtonText={t('common:cancel')}
+        onDismiss={() => setDeleteModalVisible(false)} 
         onActionButtonPress={() => {
           if(contactToDelete !== null) {
             deleteContact(contactToDelete)
-            hideDeleteModal()
+            setDeleteModalVisible(false)
           }
         }} 
-      />
-      
+      />      
+
+      <CustomSnackbar visible={snackBarVisible} message={error} onDismiss={() => setSnackBarVisible(false)} />
     </View>
   )
 }

@@ -12,13 +12,13 @@ const Profile = () => {
   //Session
   const { session } = useAuth()
   const user = session?.user
+
   //Translations
   const { t } = useTranslation('profile');
 
   return (
     <ThemedView style={styles.container}>
       <Card style={styles.card}>
-        {/* <Card.Title title="User Profile" /> */}
         <Card.Content>
           <List.Item
             title={user?.user_metadata.username || ''}
@@ -39,10 +39,6 @@ const Profile = () => {
           </Button>
         </Card.Content>
       </Card>
-
-
-
-
     </ThemedView>
   )
 }

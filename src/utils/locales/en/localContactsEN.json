@@ -1,0 +1,13 @@
+{
+    "importContacts": "Import Contacts",
+    "addContact": "Add Contact",
+    "nameNewContact": "Name the new contact",
+    "addNewContact": "Add New Contact",
+    "placeholderNameText": "Name",
+    "chooseToImport": "Choose contacts to import",
+    "accept": "Accept",
+    "tooShortNameError": "Name is too short!",
+    "delete": "Delete",
+    "deleteConfirmationInfoText": "Are you sure you want to delete this contact? This will also delete all items linked to this contact.",
+    "permissionDenied": "Permission Denied!"
+}

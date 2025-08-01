@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Button, Dialog, Portal } from 'react-native-paper'
 import ThemedText from './ThemedText'
 import { changeLanguage as i18nChangeLanguage } from '../utils/i18n';
+import { Languages } from '../constants/Languages'
 
 type LanguageSelectorProps = {
     mode?: 'flag' | 'button';
@@ -12,21 +13,17 @@ type LanguageSelectorProps = {
 }
 
 const LanguageSelector = ({ mode = 'flag', style, buttonText="Change Language"} : LanguageSelectorProps) => {
-    const languages = [ //TODO: Przerzucić do const
-        { code: 'en', label: 'English', flag: '🇬🇧' },
-        { code: 'pl', label: 'Polski', flag: '🇵🇱' }
-    ]     
+  //Language Dialog State
+  const [langDialogVisible, setLangDialogVisible] = useState(false)
 
-    const { i18n } = useTranslation()
-    const [langDialogVisible, setLangDialogVisible] = useState(false)
+  //Translations
+  const { t, i18n } = useTranslation('profile')
+  const currentLang = Languages.find(l => l.code === i18n.language) || Languages[0]
 
-    const changeLanguage = async (code: string) => {
-        await i18nChangeLanguage(code);
-        setLangDialogVisible(false)
-    }
-
-    const currentLang = languages.find(l => l.code === i18n.language) || languages[0]
-
+  const changeLanguage = async (code: string) => {
+    await i18nChangeLanguage(code);
+    setLangDialogVisible(false)
+  }
 
   return (
     <View style={style}>
@@ -42,10 +39,9 @@ const LanguageSelector = ({ mode = 'flag', style, buttonText="Change Language"} 
 
         <Portal>
             <Dialog visible={langDialogVisible} onDismiss={() => setLangDialogVisible(false)}>
-                {/* <Dialog.Title>{t("authentication:mutual.selectLanguage")}</Dialog.Title> */}
-                <Dialog.Title>Wybierz język:</Dialog.Title>
+                <Dialog.Title>{t('changeLanguage')}:</Dialog.Title>
                 <Dialog.Content>
-                {languages.map(({ code, label, flag }) => (
+                {Languages.map(({ code, label, flag }) => (
                     <Pressable key={code} onPress={() => changeLanguage(code)} style={styles.langOption}>
                     <ThemedText style={styles.langText}>{flag}  {label}</ThemedText>
                     </Pressable>
@@ -53,9 +49,7 @@ const LanguageSelector = ({ mode = 'flag', style, buttonText="Change Language"} 
                 </Dialog.Content>
             </Dialog>
         </Portal>
-
     </View>
-
   )
 }
 

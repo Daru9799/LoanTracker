@@ -1,12 +1,13 @@
-import { FlatList, Pressable, StyleSheet, Text } from 'react-native'
+import { FlatList, StyleSheet, Text } from 'react-native'
 import React, { useState } from 'react'
-import { Button, Icon, IconButton, Modal, Portal } from 'react-native-paper'
+import { Button, Modal, Portal } from 'react-native-paper'
 import ThemedText from './ThemedText'
-import { Colors } from '../constants/Colors'
-import useThemeColors from '../hooks/useThemeColors'
-import { useContacts } from '../hooks/useContacts'
+import { Colors } from '@/src/constants/Colors'
+import useThemeColors from '@/src/hooks/useThemeColors'
+import { useContacts } from '@/src/hooks/useContacts'
 import ImportedContactCard from './ImportedContactCard'
-import CloseIcon from './CloseIcon'
+import { useTranslation } from 'react-i18next'
+import CustomActivityIndicator from './CustomActivityIndicator'
 
 type ImportContactModalProps = {
     visible: boolean;
@@ -15,10 +16,17 @@ type ImportContactModalProps = {
 }
 
 const ImportContactModal = ({visible, hideModal, onImportContacts} : ImportContactModalProps) => {
+  //UI - Theme
   const { cardBackgroundDark } = useThemeColors();
+
+  //Import contact state
+  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
+
+  //API data
   const { contacts, loadingContacts, permissionGranted } = useContacts();
 
-  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
+  //Translations
+  const { t } = useTranslation('contacts');
 
   const resetModal = () => {
     setSelectedContacts([])
@@ -32,20 +40,17 @@ const ImportContactModal = ({visible, hideModal, onImportContacts} : ImportConta
   };
 
   if (loadingContacts) {
-    return <Text>Loading...</Text>;
+    return <CustomActivityIndicator />;
   } 
 
   if (!permissionGranted) {
-    return <Text>No permission to access contacts</Text>;
+    return <ThemedText>{t('permissionDenied')}</ThemedText>;
   }
 
   return (
     <Portal>
         <Modal visible={visible} onDismiss={resetModal} contentContainerStyle={[styles.modalStyle, {backgroundColor: cardBackgroundDark}]}>
-
-          <CloseIcon hideModal={hideModal} />
-
-          <ThemedText style={styles.text}>Choose contacts to import.</ThemedText>
+          <ThemedText style={styles.text}>{t('chooseToImport')}</ThemedText>
           <FlatList
               data={contacts}
               renderItem={({item}) => <ImportedContactCard
@@ -65,7 +70,7 @@ const ImportContactModal = ({visible, hideModal, onImportContacts} : ImportConta
                 resetModal()
               }}
               disabled={selectedContacts.length === 0}>
-              <Text style={{color: 'white'}}>Accept</Text>
+              <Text style={{color: 'white'}}>{t('accept')}</Text>
             </Button>
         </Modal>
     </Portal>

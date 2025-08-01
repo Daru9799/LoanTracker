@@ -1,13 +1,13 @@
 import { StyleSheet, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { MoneyLoan } from '../types/money_loan'
+import { MoneyLoan } from '@/src/types/money_loan'
 import ThemedText from './ThemedText';
 import { Link } from 'expo-router';
 import { Banknote, Calendar, CalendarClock, Contact2 } from 'lucide-react-native';
-import { Colors } from '../constants/Colors';
-import useThemeColors from '../hooks/useThemeColors';
+import { Colors } from '@/src/constants/Colors';
+import useThemeColors from '@/src/hooks/useThemeColors';
 import dayjs from 'dayjs';
-import { checkIsLate } from '../functions';
+import { checkIsLate } from '@/src/functions/checkIsLate';
 
 type MoneyLoanCardProps = {
     moneyLoan: MoneyLoan;

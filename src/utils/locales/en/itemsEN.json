@@ -1,0 +1,40 @@
+{
+    "shared": {
+        "lentItems": "Lent Items",
+        "addNew": "Add new"
+    },
+    "form": {
+        "name": "Name",
+        "note": "Note",
+        "notePlaceholder": "Note (max 150 characters)",
+        "quantity": "Quantity",
+        "borrowedDate": "Borrowed Date",
+        "returnDate": "Return Date",
+        "category": "Category",
+        "image": "Image",
+        "choosePhoto": "Choose Photo",
+        "changePhoto": "Change Photo",
+        "openCamera": "Open Camera",
+        "borrowerUser": "Borrower User",
+        "chooseButtonText": "Choose borrower user/contact",
+        "changeButtonText": "Change borrower user/contact",
+        "addNewItem": "Add New Item",
+        "gotIt": "Got it!",
+        "addedToDatabase": "Item added to database!",
+        "nameTooShortError": "Name is too short!",
+        "imageError": "Failed to upload the image. Please try again.",
+        "categoryError": "You need to choose category!",
+        "cameraPermission": "Camera permission required",
+        "borrowerError": "You need to select a person you are lending the item to."
+    },
+    "friendsForm": {
+        "chooseUserType": "Choose user type",
+        "friend": "Friend",
+        "localContact": "Local Contact",
+        "chooseUser": "Choose user",
+        "goBack": "Go Back",
+        "accept": "Accept",
+        "noContacts": "No contacts found! Please create one.",
+        "noFriends": "No friends found!"
+    }
+}

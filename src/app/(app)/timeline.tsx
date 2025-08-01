@@ -1,51 +1,46 @@
 import { ActivityIndicator, StyleSheet } from 'react-native'
 import React from 'react'
 import Timeline from 'react-native-timeline-flatlist'
-import { checkIsLate } from '@/src/functions';
+import { checkIsLate } from '@/src/functions/checkIsLate';
 import ThemedView from '@/src/components/ThemedView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 import ThemedText from '@/src/components/ThemedText';
 import { useItemList } from '@/src/api/items';
-import dayjs from 'dayjs';
 import useThemeColors from '@/src/hooks/useThemeColors';
-
-function formatDate(date: string|undefined) {
-  console.log(dayjs(date))
-  if (!date) {
-    return 'TBD';
-  }
-  const parsed = dayjs(date)
-  const day = String(parsed.date()).padStart(2, '0');
-  const month = String(parsed.month() + 1).padStart(2, '0');
-  return `${day}.${month}`;
-}
+import { formatDate } from '@/src/functions/formatDate';
+import { useTranslation } from 'react-i18next';
 
 export default function MyTimeline() {
-    const { data: items, isLoading, error } = useItemList({sortAscending: false});
-    const { normalTextColor } = useThemeColors();
+  //API data
+  const { data: items, isLoading, error } = useItemList({sortAscending: false});
 
-    //Format danych pod timeline
-    const isLate = (date1: Date | undefined, isReturned: boolean) => {
-        return checkIsLate(date1, isReturned)
-    }
-    
-    const timelineData = items?.map(item => ({
-        // time: formatDateToDayMonth(item.return_at),
-        time: formatDate(item.return_at?.toString()),
-        title: item.title,
-        description: item.description || '',
-        //Kolor kółka w zależności od stanu:
-        circleColor: item.is_returned ? '#009688' : (isLate(item.return_at, item.is_returned) ? 'orange' : 'red'),
-        circleStyle: item.is_returned ? undefined : { borderWidth: 2, borderColor: '#009688' },
-    }));
+  //UI theme
+  const { normalTextColor } = useThemeColors();
+  
+  //Translations
+  const { t } = useTranslation('common');
 
-    if (isLoading) {
-      return <ActivityIndicator />;
-    }
-    if (error) {
-      return <ThemedText>Failed to fetch test data! {error.message}</ThemedText>;
-    }
+  const timelineData = items?.map(item => ({
+      time: formatDate(item.return_at?.toString()),
+      title: item.title,
+      description: item.description || '',
+      //Circle color based on status
+      circleColor: item.is_returned ? '#009688' : (checkIsLate(item.return_at) ? 'orange' : 'red'),
+      circleStyle: item.is_returned ? undefined : { borderWidth: 2, borderColor: '#009688' },
+  }));
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
+  if (error) {
+    return <ThemedText style={styles.infoText}>{t('failedFetchingData')} {error.message}</ThemedText>;
+  }
+
+  if(items && items?.length === 0) {
+    return <ThemedText style={styles.infoText}>{t('timelineNoData')}</ThemedText>;
+  }
     
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
@@ -64,7 +59,6 @@ export default function MyTimeline() {
         </ScrollView>
       </ThemedView>
     </SafeAreaView>
-
   );
 }
 
@@ -87,4 +81,8 @@ const styles = StyleSheet.create({
   descriptionStyle: {
     color: 'gray',
   },
+  infoText: {
+    textAlign: 'center',
+    marginTop: 7
+  }
 });

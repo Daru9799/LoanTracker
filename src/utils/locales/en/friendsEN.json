@@ -1,0 +1,13 @@
+{
+    "friends": "Friends",
+    "invitations": "Invitations",
+    "noFriends": "You dont have any friends!",
+    "invitationInfo": "Provide username of a person that you want to invite",
+    "sendInvitation": "Invite",
+    "placeholderName": "Friend username",
+    "delete": "Delete",
+    "deleteInfo": "Are you sure you want to delete this friend? This will also delete all items linked to this user.",
+    "noInvitations": "You dont have any invitations!",
+    "pendings": "Pendings",
+    "noPendings": "You dont have any pendings!"
+}

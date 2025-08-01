@@ -13,15 +13,19 @@ import { useTranslation } from 'react-i18next'
 import LanguageSelector from '@/src/components/LanguageSelector'
 
 const Login = () => {
+  //Login Form States
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [loading, setLoading] = useState(false)
-  const [visible, setVisible] = useState(false);
-  const [error, setError] = useState('')
 
+  //Loading and error handling
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  //Router
   const router = useRouter();
 
-  const hideDialog = () => setVisible(false);
+  //Warning Dialog State
+  const [warningDialogVisible, setWarningDialogVisible] = useState(false);
 
   //Translations
   const { t } = useTranslation('authentication');
@@ -34,7 +38,7 @@ const Login = () => {
     })
     if (error) {
       setError(error.message)
-      setVisible(true)
+      setWarningDialogVisible(true)
     }
 
     clearForm()
@@ -82,7 +86,7 @@ const Login = () => {
         </ThemedText>
       </Pressable>
 
-      <CustomWarningDialog visible={visible} title={'Login error'} description={error} onDismiss={hideDialog} icon={'alert'} iconColor={'#FF2C2C'}/>
+      <CustomWarningDialog visible={warningDialogVisible} title={'Login error'} description={error} onDismiss={() => setWarningDialogVisible(false)} icon={'alert'} iconColor={'#FF2C2C'}/>
 
     </ThemedView>
   )

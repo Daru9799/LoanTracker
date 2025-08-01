@@ -1,0 +1,13 @@
+{
+    "friends": "Znajomi",
+    "invitations": "Zaproszenia",
+    "noFriends": "Lista znajomych jest pusta!",
+    "invitationInfo": "Podaj nazwę użytkownika osoby, którą chcesz zaprosić",
+    "sendInvitation": "Zaproś",
+    "placeholderName": "Nazwa użytkownika znajomego",
+    "delete": "Usuń",
+    "deleteInfo": "Czy na pewno chcesz usunąć tego znajomego? Spowoduje to również usunięcie wszystkich powiązanych z nim elementów.",
+    "noInvitations": "Nie masz żadnych zaproszeń!",
+    "pendings": "Oczekujące",
+    "noPendings": "Nie masz żadnych oczekujących zaproszeń!"
+}

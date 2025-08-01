@@ -5,15 +5,20 @@ import ThemedView from '@/src/components/ThemedView'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useItemList } from '@/src/api/items'
 import ThemedText from '@/src/components/ThemedText'
+import { useTranslation } from 'react-i18next'
 
 const ArchivedItems = () => {  
+  //API data
   const { data: items, isLoading, error } = useItemList({isArchived: true});
+
+  //Translations
+  const { t } = useTranslation(['common']);
 
   if (isLoading) {
     return <ActivityIndicator />;
   }
   if (error) {
-    return <ThemedText>Failed to fetch test data!</ThemedText>;
+    return <ThemedText>{t('common:failedFetchingData')}</ThemedText>;
   }
   
   return (

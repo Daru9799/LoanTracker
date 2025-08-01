@@ -13,16 +13,20 @@ import { useTranslation } from 'react-i18next'
 import LanguageSelector from '@/src/components/LanguageSelector'
 
 const Register = () => {
+  //Register Form States
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [username, setUsername] = useState<string>('')
+
+  //Loading and error handling
   const [loading, setLoading] = useState(false)
-  const [visible, setVisible] = useState(false);
   const [error, setError] = useState('')
 
+  //Router
   const router = useRouter();
 
-  const hideDialog = () => setVisible(false);
+  //Warning Dialog State
+  const [warningDialogVisible, setWarningDialogVisible] = useState(false);
 
   //Translations
   const { t } = useTranslation('authentication');
@@ -37,14 +41,14 @@ const Register = () => {
 
     if (usernameCheckError) {
       setError("Unexpected error checking username.");
-      setVisible(true);
+      setWarningDialogVisible(true);
       setLoading(false);
       return
     }
 
     if (userWithSameUsername.length > 0) {
       setError("Username is already taken.");
-      setVisible(true);
+      setWarningDialogVisible(true);
       setLoading(false);
       return
     }
@@ -65,7 +69,7 @@ const Register = () => {
         error.message = "Password must be at least 8 characters long and include a number and an uppercase letter!";
       }
       setError(error.message);
-      setVisible(true);
+      setWarningDialogVisible(true);
       setLoading(false);
       return;
     }
@@ -120,7 +124,7 @@ const Register = () => {
         </ThemedText>
       </Pressable>      
 
-      <CustomWarningDialog visible={visible} title={'Register error'} description={error} onDismiss={hideDialog} icon={'alert'} iconColor={'#FF2C2C'}/>
+      <CustomWarningDialog visible={warningDialogVisible} title={'Register error'} description={error} onDismiss={() => setWarningDialogVisible(false)} icon={'alert'} iconColor={'#FF2C2C'}/>
 
     </ThemedView>
   )

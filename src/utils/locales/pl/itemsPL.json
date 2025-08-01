@@ -1,0 +1,40 @@
+{
+    "shared": {
+        "lentItems": "Wypożyczone przedmioty",
+        "addNew": "Dodaj nowy"
+    },
+    "form": {
+        "name": "Nazwa",
+        "note": "Notatka",
+        "notePlaceholder": "Notatka (maks. 150 znaków)",
+        "quantity": "Ilość",
+        "borrowedDate": "Data wypożyczenia",
+        "returnDate": "Data zwrotu",
+        "category": "Kategoria",
+        "image": "Zdjęcie",
+        "choosePhoto": "Wybierz zdjęcie",
+        "changePhoto": "Zmień zdjęcie",
+        "openCamera": "Otwórz aparat",
+        "borrowerUser": "Pożyczający",
+        "chooseButtonText": "Wybierz użytkownika/kontakt",
+        "changeButtonText": "Zmień użytkownika/kontakt",
+        "addNewItem": "Dodaj nowy przedmiot",
+        "gotIt": "Zrozumiałem!",
+        "addedToDatabase": "Przedmiot pomyślnie dodany do bazy!",
+        "nameTooShortError": "Nazwa jest za krótka!",
+        "imageError": "Nie udało się dodać zdjęcia. Spróbuj ponownie.",
+        "categoryError": "Musisz wybrać kategorie!",
+        "cameraPermission": "Zezwolenie na dostęp do kamery jest wymagane!",
+        "borrowerError": "Musisz wybrać osobę, której pożyczasz przedmiot."
+    },
+    "friendsForm": {
+        "chooseUserType": "Wybierz typ użytkownika",
+        "friend": "Znajomy",
+        "localContact": "Lokalny kontakt",
+        "chooseUser": "Wybierz użytkownika",
+        "goBack": "Wróć",
+        "accept": "Akceptuj",
+        "noContacts": "Brak istniejących kontaktów! Aby przejść dalej utwórz jakiś.",
+        "noFriends": "Brak znajomych."
+    }
+}

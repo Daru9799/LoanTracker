@@ -20,13 +20,14 @@ import ContactCard from '@/src/components/ContactCard';
 import { useContactDetails } from '@/src/api/contacts';
 import UserCard from '@/src/components/UserCard';
 import { useFriendDetails } from '@/src/api/profiles';
+import { useTranslation } from 'react-i18next';
+import CustomSnackbar from '@/src/components/CustomSnackBar';
 
 const Create = () => {
   const [itemName, setItemName] = useState('')
   const [itemDescription, setItemDescription] = useState('')
   const [borrowedDate, setBorrowedDate] = useState(new Date())
   const [returnDate, setReturnDate] = useState(dayjs().add(1, 'day').toDate()) //Na start zawsze ustawia dzien do przodu dla return
-  const [show, setShow] = useState(false);
   const [datePickerType, setDatePickerType] = useState<'borrowed' | 'return'>('borrowed')
   const [isDateReturnSelected, setIsDateReturnSelected] = useState(true);
   const [itemQuantity, setItemQuantity] = useState('1')
@@ -34,19 +35,27 @@ const Create = () => {
   const [isImageSelected, setIsImageSelected] = useState(false);
   const [itemImage, setItemImage] = useState<string | null>(null);
   const [error, setError] = useState('');
-  const [visible, setVisible] = useState(false);
-  const onDismissSnackBar = () => setVisible(false);
-
-  const { data: categories } = useCategoriesList()
-  const { mutate: createItem } = useCreateItem()
   const [isLoading, setIsLoading] = useState(false)
 
   //UserPickerModal
   const [pickerModalVisible, setPickerModalVisible] = useState(false);
   const [selectedBorrowerUserId, setSelectedBorrowerUserId] = useState<string | null>(null);
   const [selectedBorrowerContactId, setSelectedBorrowerContactId] = useState<string | null>(null);
+
+  //API data
+  const { data: categories } = useCategoriesList()
   const { data: contact } = useContactDetails(selectedBorrowerContactId)
   const { data: friend } = useFriendDetails(selectedBorrowerUserId)
+  const { mutate: createItem } = useCreateItem()
+
+  //DatePicker State
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
+
+  //SnackBar State
+  const [snackBarVisible, setSnackBarVisible] = useState(false);
+
+  //Translations
+  const { t } = useTranslation('items');
 
   const addItemToList = async () => {
     if (itemCategoryId === null) return
@@ -56,8 +65,8 @@ const Create = () => {
     try {
       if(itemImage !== null) {
         const uploadedUrl = await uploadImage()
-        if (uploadedUrl === undefined) { //Jeśli zwróci undefined (czyli coś pójdzie nie tak) to wywali błąd
-          setVisible(true)
+        if (uploadedUrl === undefined) { //If it returns undefined, it will throw an error
+          setSnackBarVisible(true)
           return
         }
         fileUrl = uploadedUrl; 
@@ -73,21 +82,23 @@ const Create = () => {
         itemImageUrl: isImageSelected ? fileUrl : null,
         borrowerContactId: selectedBorrowerContactId,
         borrowerUserId: selectedBorrowerUserId
-      }, {onSuccess: onItemAddedSuccess})
+      }, {
+        onSuccess: onItemAddedSuccess
+      })
     } finally {
       setIsLoading(false);
     }
   }
 
   const onItemAddedSuccess = () => {
-    setError("Item added to database!")
-    setVisible(true)
+    setError(t('form.addedToDatabase'))
+    setSnackBarVisible(true)
   }
 
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     if(!selectedDate) return;
     const currentDate = selectedDate;
-    setShow(false);
+    setDatePickerVisible(false);
     datePickerType === 'borrowed' ? setBorrowedDate(currentDate) : setReturnDate(currentDate);
   };
 
@@ -97,7 +108,7 @@ const Create = () => {
     } else {
       setDatePickerType('return')
     }
-    setShow(true);
+    setDatePickerVisible(true);
   };
 
   const pickImage = async () => {
@@ -129,8 +140,7 @@ const Create = () => {
       .upload(filePath, decode(base64), { contentType });
 
     if(error) {
-      setError("Failed to upload the image. Please try again.")
-      console.log("Error:" + error.message)
+      setError(t('form.imageError'))
       return
     }
 
@@ -141,14 +151,20 @@ const Create = () => {
 
   const submitForm = () => {
     if(itemName.length < 3) {
-      setError("Name is too short!")
-      setVisible(true)
+      setError(t('form.nameTooShortError'))
+      setSnackBarVisible(true)
       return
     }
 
     if(itemCategoryId === null) {
-      setError("You need to choose category!")
-      setVisible(true)
+      setError(t('form.categoryError'))
+      setSnackBarVisible(true)
+      return
+    }
+
+    if(selectedBorrowerUserId === null && selectedBorrowerContactId === null) {
+      setError(t('form.borrowerError'))
+      setSnackBarVisible(true)
       return
     }
 
@@ -169,7 +185,7 @@ const Create = () => {
   const openCamera = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) {
-      alert('Camera permission required');
+      alert(t('form.cameraPermission'));
       return;
     }
 
@@ -187,32 +203,32 @@ const Create = () => {
   return (
     <ThemedView style={styles.container}>
       <ScrollView>
-        <ThemedText style={styles.text}>Name: </ThemedText>
+        <ThemedText style={styles.text}>{t('form.name')}: </ThemedText>
         <View style={styles.field}>
-          <CustomInputField placeholder='Name' value={itemName} onChangeText={setItemName}/>
+          <CustomInputField placeholder={t('form.name')} value={itemName} onChangeText={setItemName}/>
         </View>
 
-        <ThemedText style={styles.text}>Note: </ThemedText>
+        <ThemedText style={styles.text}>{t('form.note')}: </ThemedText>
         <View style={styles.field}>
-          <CustomInputField placeholder='Note (max 150)' style={{height: 80, textAlignVertical: 'top'}} value={itemDescription} onChangeText={setItemDescription} multiline={true} numberOfLines={3} maxLength={150}/>
+          <CustomInputField placeholder={t('form.notePlaceholder')} style={{height: 80, textAlignVertical: 'top'}} value={itemDescription} onChangeText={setItemDescription} multiline={true} numberOfLines={3} maxLength={150}/>
         </View>
 
-        <ThemedText style={styles.text}>Quantity: </ThemedText>
+        <ThemedText style={styles.text}>{t('form.quantity')}: </ThemedText>
         <View style={styles.field}>
-          <CustomInputField placeholder='Quantity' value={itemQuantity} onChangeText={setItemQuantity} inputMode='numeric'/>
+          <CustomInputField placeholder={t('form.quantity')} value={itemQuantity} onChangeText={setItemQuantity} inputMode='numeric'/>
         </View>
 
-        <ThemedText style={styles.text}>Borrowed Date: </ThemedText>
+        <ThemedText style={styles.text}>{t('form.borrowedDate')}: </ThemedText>
         <View style={styles.field}>
             <Pressable onPress={() => showDatepicker('borrowed')}>
-              <CustomInputField placeholder='Borrowed Date' value={borrowedDate.toLocaleDateString()} readOnly={true} />
+              <CustomInputField placeholder={t('form.borrowedDate')} value={borrowedDate.toLocaleDateString()} readOnly={true} />
             </Pressable>
         </View>
 
         <List.Accordion title={
           <View>
               <Checkbox.Item 
-                label="Return Date:"
+                label={t('form.returnDate')}
                 position='leading'
                 color={Colors.light.buttonColor}
                 status={isDateReturnSelected ? 'checked' : 'unchecked'}
@@ -227,12 +243,12 @@ const Create = () => {
           >
           <View style={styles.field}>
             <Pressable onPress={() => showDatepicker('return')}>
-              <CustomInputField placeholder='Return Date' value={returnDate.toLocaleDateString()} readOnly={true} />
+              <CustomInputField placeholder={t('form.returnDate')} value={returnDate.toLocaleDateString()} readOnly={true} />
             </Pressable>
           </View>
         </List.Accordion>
 
-        <List.Accordion title={'Category'}>
+        <List.Accordion title={t('form.category')}>
           <View style={styles.categoriesContainer}>
             {categories?.map((cat) => (
               <Chip 
@@ -249,7 +265,7 @@ const Create = () => {
         <List.Accordion title={
           <View>
               <Checkbox.Item 
-                label="Image:"
+                label={t('form.image')}
                 position='leading'
                 color='#2196F3'
                 status={isImageSelected ? 'checked' : 'unchecked'}
@@ -265,16 +281,16 @@ const Create = () => {
           {itemImage && <Image source={{ uri: itemImage }} style={styles.image} />}
           <ThemedView style={styles.imageButtonContainer}>
             <Button icon="image" mode="text" style={styles.imageButton} onPress={pickImage}>
-              {itemImage ? 'Change Photo' : 'Choose Photo' }
+              {itemImage ? t('form.changePhoto') : t('form.choosePhoto') }
             </Button>
             <Button icon="camera" mode="text" style={styles.imageButton} onPress={openCamera}> 
-              Open Camera
+              {t('form.openCamera')}
             </Button>
           </ThemedView>
         </List.Accordion>
 
         <ThemedView style={styles.borrowerCard}>
-            <ThemedText style={styles.sectionTitle}>Borrower User</ThemedText>
+            <ThemedText style={styles.sectionTitle}>{t('form.borrowerUser')}</ThemedText>
             {selectedBorrowerContactId && contact &&
               <ContactCard contact={contact} />
             }
@@ -283,23 +299,23 @@ const Create = () => {
             }
             {!selectedBorrowerContactId && !selectedBorrowerUserId &&
               <Button onPress={() => setPickerModalVisible(true)}>
-                <Text>Choose borrower user/contact</Text>
+                <Text>{t('form.chooseButtonText')}</Text>
               </Button>
               }
         </ThemedView>
 
         {(selectedBorrowerContactId || selectedBorrowerUserId) && 
             <Button onPress={() => setPickerModalVisible(true)}>
-              <Text>Change borrower user/contact</Text>
+              <Text>{t('form.changeButtonText')}</Text>
             </Button>
         }   
 
         <Button buttonColor={Colors.light.buttonColor} icon="" mode="contained" style={styles.submitButton} onPress={submitForm}>
-          <Text style={{color: 'white'}}>Add New Item</Text>
+          <Text style={{color: 'white'}}>{t('form.addNewItem')}</Text>
         </Button>
       </ScrollView>
 
-      {show && (
+      {datePickerVisible && (
         <DateTimePicker
           testID="dateTimePicker"
           value={ datePickerType === 'borrowed' ? borrowedDate : returnDate }
@@ -321,22 +337,10 @@ const Create = () => {
             setSelectedBorrowerContactId(null)
             setSelectedBorrowerUserId(id)
           }
-          console.log(`Wybrano: ${id} (${type})`)
         }
       }/>
 
-      <Snackbar
-        visible={visible}
-        onDismiss={onDismissSnackBar}
-        duration={3000}
-        action={{
-          label: 'Got it!',
-          onPress: () => {
-            onDismissSnackBar
-          },
-        }}>
-        {error}
-      </Snackbar>
+      <CustomSnackbar visible={snackBarVisible} message={error} onDismiss={() => setSnackBarVisible(false)} />
     </ThemedView>
   )
 }

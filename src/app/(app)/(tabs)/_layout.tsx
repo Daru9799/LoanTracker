@@ -2,8 +2,12 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { Package, Banknote } from 'lucide-react-native';
 import TabIcon from '@/src/components/TabIcon';
+import { useTranslation } from 'react-i18next';
 
 export default function TabLayout() {
+  //Translations
+  const { t } = useTranslation('navbar');
+  
   return (
     <Tabs
       screenOptions={{
@@ -17,7 +21,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <TabIcon IconComponent={Package} color={color} />
           ),
-          tabBarLabel: 'Items',
+          tabBarLabel: t('items'),
         }}
       />
       <Tabs.Screen
@@ -27,7 +31,7 @@ export default function TabLayout() {
           tabBarIcon: ({color}) => (
             <TabIcon IconComponent={Banknote} color={color} />
           ),
-          tabBarLabel: 'Money'
+          tabBarLabel: t('money')
         }}
       />
     </Tabs>

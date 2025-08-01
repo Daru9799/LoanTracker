@@ -1,14 +1,14 @@
 import { StyleSheet, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Item } from '../types/item'
+import { Item } from '@/src/types/item'
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { CalendarClock, Calendar, Contact2 } from 'lucide-react-native';
-import { checkIsLate } from '../functions';
+import { checkIsLate } from '@/src/functions/checkIsLate';
 import { Link } from 'expo-router';
 import ThemedText from './ThemedText';
-import { Colors } from '../constants/Colors';
-import useThemeColors from '../hooks/useThemeColors';
+import { Colors } from '@/src/constants/Colors';
+import useThemeColors from '@/src/hooks/useThemeColors';
 
 dayjs.extend(relativeTime)
 

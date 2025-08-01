@@ -8,6 +8,7 @@ import QueryProvider from '../providers/QueryProvider';
 import '../utils/i18n';
 
 export default function RootLayout() {
+  //UI - Theme
   const colorScheme = useColorScheme();
 
   return (

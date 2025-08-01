@@ -9,50 +9,49 @@ import { useAuth } from '@/src/providers/AuthProvider'
 import UserCard from '@/src/components/UserCard'
 import { Colors } from '@/src/constants/Colors'
 import CustomDecisionModal from '@/src/components/CustomDecisionModal'
+import { useTranslation } from 'react-i18next'
 
 const Friends = () => {
-  const { session } = useAuth()
-  const [name, setName] = useState('')
-  const [visible, setVisible] = useState(false);
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
-  const [invitationError, setInvitationError] = useState('')
-  const [dialogVisible, setDialogVisible] = useState(false);
-
-  const { mutate: createPendingRelation, error } = useSendFriendRequest()
-  const { data: friends } = useFriendsList()
-  const { mutate: deleteFriend } = useDeleteRelation()
-
+  //Modals states
+  const [newFriendModalVisible, setNewFriendModalVisible] = useState(false);
+  const [warningDialogVisible, setWarningDialogVisible] = useState(false);
   const [deleteModalvisible, setDeleteModalVisible] = useState(false);
-  const showDeleteModal = () => setDeleteModalVisible(true);
-  const hideDeleteModal = () => setDeleteModalVisible(false);
-  const [friendToDelete, setFriendToDelete] = useState<string | null>(null);
-
   const [infoDialogVisible, setInfoDialogVisible] = useState(false);
-  const showInfoDialog = () => setInfoDialogVisible(true);
-  const hideInfoDialog = () => setInfoDialogVisible(false);
 
-  const hideWarningDialog = () => setDialogVisible(false);
+  //Friends states
+  const [name, setName] = useState('');
+  const [friendToDelete, setFriendToDelete] = useState<string | null>(null);
+  const [invitationError, setInvitationError] = useState('');
+
+  //Session
+  const { session } = useAuth();
+
+  //Api data
+  const { mutate: createPendingRelation, error } = useSendFriendRequest();
+  const { data: friends } = useFriendsList();
+  const { mutate: deleteFriend } = useDeleteRelation();
+
+  //Translations
+  const { t } = useTranslation(['friends', 'common']);
 
   const onAddFriend = () => {
     createPendingRelation(name, {
       onError: (error) => {
         if (error instanceof Error) {
           setInvitationError(error.message);
-          setDialogVisible(true);
+          setWarningDialogVisible(true);
         }
       },
       onSuccess: () => {
-        hideModal()
-        showInfoDialog()
+        setNewFriendModalVisible(false)
+        setInfoDialogVisible(true)
       }
     });
   }
 
   const onDeleteFriend = (relationId: string) => {
     setFriendToDelete(relationId)
-    console.log("Do usuniecia zostal wybrany: " + relationId)
-    showDeleteModal()
+    setDeleteModalVisible(true)
   }
   
   return (
@@ -64,37 +63,39 @@ const Friends = () => {
                 contentContainerStyle={{gap: 10, padding: 10, paddingBottom: 80}}
             />
         ) : (
-            <ThemedText style={styles.clearListText}>You dont have any friends!</ThemedText>
+            <ThemedText style={styles.clearListText}>{t('noFriends')}</ThemedText>
         )}
 
 
-      <CustomAddIcon onPress={showModal}/>
+      <CustomAddIcon onPress={() => setNewFriendModalVisible(true)}/>
 
       <NewContactModal 
-        visible={visible} 
-        hideModal={hideModal} 
+        visible={newFriendModalVisible}
+        hideModal={() => setNewFriendModalVisible(false)}
         value={name}
         onChangeText={setName}
         onAddContact={onAddFriend}
-        title='Provide username of a person that you want to invite.' 
-        buttonText='Send invitation'
+        title={t('invitationInfo')}
+        buttonText={t('sendInvitation')}
+        buttonCancelText={t('common:cancel')}
+        placeholderName={t('placeholderName')}
       />
       {error && 
-        <CustomWarningDialog visible={dialogVisible} title={'Invitation error'} description={invitationError} onDismiss={hideWarningDialog} icon={'alert'} iconColor={'#FF2C2C'}/>      
+        <CustomWarningDialog visible={warningDialogVisible} title={'Invitation error'} description={invitationError} onDismiss={() => setWarningDialogVisible(false)} icon={'alert'} iconColor={'#FF2C2C'}/>      
       }
 
-      <CustomWarningDialog visible={infoDialogVisible} title={'Success'} description="User received your invintation!" onDismiss={hideInfoDialog} icon={'check-circle'} iconColor={'#28a745'}/>
+      <CustomWarningDialog visible={infoDialogVisible} title={'Success'} description="User received your invintation!" onDismiss={() => setInfoDialogVisible(false)} icon={'check-circle'} iconColor={'#28a745'}/>
 
-
-      <CustomDecisionModal 
-        visible={deleteModalvisible} 
-        modalText={'Are you sure you want to delete this friend? This will also delete all items linked to this user.'} //check
-        actionButtonText={'Delete'} 
-        onDismiss={hideDeleteModal} 
+      <CustomDecisionModal
+        visible={deleteModalvisible}
+        modalText={t('deleteInfo')} //check
+        actionButtonText={t('delete')}
+        cancelButtonText={t('common:cancel')}
+        onDismiss={() => setDeleteModalVisible(false)} 
         onActionButtonPress={() => {
           if(friendToDelete !== null) {
             deleteFriend(friendToDelete)
-            hideDeleteModal()
+            setDeleteModalVisible(false)
           }
         }}
       />       
@@ -117,6 +118,6 @@ const styles = StyleSheet.create({
   },
   clearListText: {
       textAlign: 'center',
-      marginTop: 5
+      marginTop: 7
   }
 })

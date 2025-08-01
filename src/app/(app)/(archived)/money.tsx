@@ -5,15 +5,20 @@ import ThemedText from '@/src/components/ThemedText'
 import { useMoneyLoansList } from '@/src/api/moneyLoans'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MoneyLoanCard from '@/src/components/MoneyLoanCard'
+import { useTranslation } from 'react-i18next'
 
 const ArchivedLoans = () => {
+  //API data
   const { data: loans, isLoading, error } = useMoneyLoansList({isArchived: true});
+
+  //Translations
+  const { t } = useTranslation(['common']);
 
   if (isLoading) {
     return <ActivityIndicator />;
   }
   if (error) {
-    return <ThemedText>Failed to fetch test data!</ThemedText>;
+    return <ThemedText>{t('common:failedFetchingData')}</ThemedText>;
   }
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>

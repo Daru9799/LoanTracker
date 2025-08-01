@@ -6,5 +6,7 @@
     "friendsMenu": "Friends",
     "profileMenu": "Profile",
     "myLoansMenu": "My Loans",
-    "statsMenu": "Statistics"
+    "statsMenu": "Statistics",
+    "items": "Items",
+    "money": "Money"
 }

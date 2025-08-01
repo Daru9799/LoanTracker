@@ -1,10 +1,11 @@
 import React from 'react'
 import { Redirect, Stack } from 'expo-router'
 import { useAuth } from '@/src/providers/AuthProvider'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 const AuthNav = () => {
+  //Session
   const { session } = useAuth()
+  
   if(session) {
     return <Redirect href={'/items'} />
   }

@@ -8,6 +8,14 @@ import navbarEN from './locales/en/navbarEN.json'
 import navbarPL from './locales/pl/navbarPL.json'
 import profileEN from './locales/en/profileEN.json'
 import profilePL from './locales/pl/profilePL.json'
+import itemsEN from './locales/en/itemsEN.json'
+import itemsPL from './locales/pl/itemsPL.json'
+import commonEN from './locales/en/commonEN.json'
+import commonPL from './locales/pl/commonPL.json'
+import contactsEN from './locales/en/localContactsEN.json'
+import contactsPL from './locales/pl/localContactsPL.json'
+import friendsEN from './locales/en/friendsEN.json'
+import friendsPL from './locales/pl/friendsPL.json'
 
 // the translations
 // (tip move them in a JSON file and import them,
@@ -16,12 +24,20 @@ const resources = {
   en: {
     authentication: authenticationEN,
     navbar: navbarEN,
-    profile: profileEN
+    profile: profileEN,
+    items: itemsEN,
+    common: commonEN,
+    contacts: contactsEN,
+    friends: friendsEN
   },
   pl: {
     authentication: authenticationPL,
     navbar: navbarPL,
-    profile: profilePL
+    profile: profilePL,
+    items: itemsPL,
+    common: commonPL,
+    contacts: contactsPL,
+    friends: friendsPL
   }
 };
 

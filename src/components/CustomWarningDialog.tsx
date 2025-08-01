@@ -13,7 +13,6 @@ type CustomWarningDialogProps = {
 }
 
 const CustomWarningDialog = ({visible, title, description, icon, iconColor, onDismiss} : CustomWarningDialogProps) => {
-
   return (
       <Portal>
         <Dialog style={styles.dialog} visible={visible} onDismiss={onDismiss}>
