@@ -1,4 +1,4 @@
-App is still in development
+App is still in development.
 Screenshots:
 <img width="921" height="2048" alt="image" src="https://github.com/user-attachments/assets/8a8e06be-1cb6-41b0-acd0-0462b706fd9f" />
 <img width="921" height="2048" alt="image" src="https://github.com/user-attachments/assets/48a675ee-fc5b-4678-bcef-339818812dcf" />
